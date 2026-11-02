@@ -1,0 +1,1211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; font-src 'none'; media-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>DrTS Dental Case Lab</title>
+<style>
+:root{
+  --bg:#f5f3ee;--panel:#ffffff;--panel2:#f9f7f3;--ink:#16232f;--muted:#5f6c78;--line:#e3ded4;
+  --accent:#0d6b66;--accent-2:#0a5551;--accent-soft:#e1efed;--on-accent:#ffffff;
+  --amber:#a8650f;--amber-soft:#fbf0dc;--good:#17714f;--good-soft:#e2f2e9;--bad:#b3261e;--bad-soft:#fbe7e5;
+  --shadow:0 1px 2px rgba(20,30,40,.05),0 8px 24px rgba(20,30,40,.06);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#10151a;--panel:#172029;--panel2:#1c2731;--ink:#e6ebee;--muted:#9aa7b2;--line:#2a3743;
+  --accent:#43b5aa;--accent-2:#5ec7bc;--accent-soft:#163331;--on-accent:#06201d;
+  --amber:#e3ab45;--amber-soft:#33291a;--good:#4fc390;--good-soft:#14302a;--bad:#ef6d64;--bad-soft:#3a1d1b;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0 0 .35em;line-height:1.2}
+h1{font-size:1.85rem}h2{font-size:1.32rem}h3{font-size:1.04rem}
+p{margin:.3em 0 .8em}
+a{color:var(--accent)}
+.muted{color:var(--muted)}.small{font-size:.86rem}.center{text-align:center}
+header.bar{position:sticky;top:0;z-index:10;background:var(--panel);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.12rem;font-weight:600;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand svg{width:30px;height:30px;flex:none}
+nav.main{display:flex;gap:2px;flex-wrap:wrap;flex:1}
+nav.main a{padding:7px 11px;border-radius:8px;color:var(--muted);text-decoration:none;font-weight:550;font-size:.9rem}
+nav.main a:hover{background:var(--panel2);color:var(--ink)}
+nav.main a.on{background:var(--accent-soft);color:var(--accent)}
+.who{display:flex;align-items:center;gap:10px;font-size:.88rem;color:var(--muted)}
+.who b{color:var(--ink);font-weight:600}
+main{max-width:1180px;margin:0 auto;padding:26px 16px 70px;outline:none}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:20px}
+.btn{appearance:none;border:1px solid transparent;background:var(--accent);color:var(--on-accent);padding:9px 16px;border-radius:9px;font:600 .9rem var(--sans);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;justify-content:center}
+.btn:hover{background:var(--accent-2)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--ink)}.btn.ghost:hover{background:var(--panel2)}
+.btn.danger{background:var(--bad);color:#fff}.btn.sm{padding:5px 10px;font-size:.8rem;border-radius:7px}
+.btn.block{width:100%;margin-top:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spacer{flex:1}
+label{display:block;font-weight:600;font-size:.84rem;margin:14px 0 5px}
+input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--ink);font:inherit}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=checkbox],input[type=range]{width:auto}
+.check{display:flex;gap:9px;align-items:flex-start;font-weight:400;font-size:.86rem;color:var(--muted)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.alert{border-radius:10px;padding:10px 13px;font-size:.88rem;margin:10px 0}
+.alert.bad{background:var(--bad-soft);color:var(--bad)}.alert.good{background:var(--good-soft);color:var(--good)}.alert.warn{background:var(--amber-soft);color:var(--amber)}
+.alert ul{margin:4px 0 0 18px;padding:0}
+.rules{list-style:none;padding:0;margin:8px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;font-size:.8rem}
+.rules li{color:var(--muted)}.rules li::before{content:"○ "}.rules li.ok{color:var(--good)}.rules li.ok::before{content:"● "}
+.auth{max-width:440px;margin:28px auto}
+.hero{text-align:center;margin-bottom:18px}
+.hero svg{width:58px;height:58px}
+.hero p{color:var(--muted);max-width:360px;margin:6px auto 0}
+.page-head{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.page-head p{margin:0;color:var(--muted)}
+.eyebrow{font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;color:var(--accent);font-weight:700;margin-bottom:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.grid.wide{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
+.mod{display:flex;flex-direction:column;gap:10px}
+.mod .num{font-family:var(--serif);font-size:2rem;line-height:1}
+.track{height:8px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.fill{height:100%;background:var(--accent);border-radius:6px}
+.item{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:inherit;transition:transform .12s,border-color .12s}
+.item:hover{transform:translateY(-2px);border-color:var(--accent)}
+.item h3{margin:0}
+.thumb{background:#000;border-radius:9px;overflow:hidden;line-height:0}
+.thumb svg{width:100%;height:auto;display:block}
+.tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:.72rem;font-weight:700;background:var(--accent-soft);color:var(--accent);letter-spacing:.02em}
+.tag.done{background:var(--good-soft);color:var(--good)}.tag.part{background:var(--amber-soft);color:var(--amber)}.tag.none{background:var(--panel2);color:var(--muted)}
+.tag.bad{background:var(--bad-soft);color:var(--bad)}
+.split{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:880px){.split{grid-template-columns:1fr}}
+.sheet dl{display:grid;grid-template-columns:130px 1fr;gap:6px 14px;margin:0}
+.sheet dt{color:var(--muted);font-size:.82rem;font-weight:600;padding-top:2px}
+.sheet dd{margin:0}
+.sheet ul{margin:0;padding-left:18px}
+@media (max-width:560px){.sheet dl{grid-template-columns:1fr}.sheet dt{padding-top:6px}}
+.opt{display:block;width:100%;text-align:left;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);margin:8px 0;cursor:pointer;font:inherit;line-height:1.4}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--panel2)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.feedback{border-left:3px solid var(--accent);background:var(--panel2);padding:10px 14px;border-radius:0 10px 10px 0;margin-top:12px;font-size:.92rem}
+.dots{display:flex;gap:6px;margin:4px 0 14px}
+.dots span{width:26px;height:6px;border-radius:4px;background:var(--line)}
+.dots span.cur{background:var(--accent)}.dots span.ok{background:var(--good)}.dots span.no{background:var(--bad)}
+.viewer{background:#000;border-radius:12px;padding:10px;position:relative}
+.viewer svg{width:100%;height:auto;display:block;border-radius:8px}
+.viewer.locate svg{cursor:crosshair}
+.vctl{display:flex;gap:16px;flex-wrap:wrap;align-items:center;padding:10px 4px 2px;color:#cfd6db;font-size:.8rem}
+.vctl label{margin:0;font-weight:500;display:flex;align-items:center;gap:7px;color:#cfd6db;font-size:.8rem}
+.vctl input[type=range]{width:110px;accent-color:#43b5aa}
+.vctl button{background:#22292f;color:#e6ebee;border:1px solid #39434c;border-radius:7px;padding:4px 10px;font:600 .78rem var(--sans);cursor:pointer}
+.step{display:flex;gap:10px;align-items:center;font-weight:600;margin:4px 0 8px}
+.step .n{width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:.8rem}
+.step.dim{color:var(--muted)}.step.dim .n{background:var(--line);color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
+.kpi .v{font-family:var(--serif);font-size:1.9rem;line-height:1.1}
+.kpi .l{color:var(--muted);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.barrow{display:grid;grid-template-columns:minmax(120px,190px) 1fr 52px;gap:12px;align-items:center;margin:9px 0;font-size:.88rem}
+.barrow .track{height:12px}
+.days{display:flex;align-items:flex-end;gap:5px;height:110px;padding-top:6px}
+.days div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.days i{display:block;width:100%;max-width:26px;background:var(--accent);border-radius:4px 4px 0 0;min-height:2px}
+.days small{font-size:.66rem;color:var(--muted)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px;flex-wrap:wrap}
+.tabs a{padding:9px 14px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs a.on{color:var(--accent);border-color:var(--accent)}
+.tablewrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+.tbl th,.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.tbl th{font-weight:700;color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+.tbl tr.sel td{background:var(--accent-soft)}
+.sec-list{list-style:none;margin:0;padding:0}
+.sec-list li{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.sec-list .ic{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:.75rem;font-weight:800}
+.ic.ok{background:var(--good-soft);color:var(--good)}.ic.warn{background:var(--amber-soft);color:var(--amber)}.ic.bad{background:var(--bad-soft);color:var(--bad)}
+.stack>*+*{margin-top:18px}
+#toasts{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:50;max-width:min(380px,calc(100vw - 32px))}
+.toast{background:var(--ink);color:var(--bg);padding:11px 14px;border-radius:10px;font-size:.88rem;box-shadow:var(--shadow)}
+.toast.bad{background:var(--bad);color:#fff}.toast.good{background:var(--good);color:#fff}
+.keys{margin:8px 0 0;padding-left:18px;font-size:.9rem}
+.score-big{font-family:var(--serif);font-size:3rem;line-height:1;color:var(--accent)}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+footer.foot{max-width:1180px;margin:0 auto;padding:0 16px 30px;color:var(--muted);font-size:.78rem}
+</style>
+</head>
+<body>
+<noscript><p style="padding:20px">DrTS Dental Case Lab needs JavaScript enabled.</p></noscript>
+<header class="bar" id="bar"></header>
+<main id="app" tabindex="-1"></main>
+<footer class="foot">Prototype for teaching use. Radiographs are schematic illustrations generated for this app, not patient images.</footer>
+<div id="toasts" aria-live="polite"></div>
+<script>
+'use strict';
+(function(){
+
+/* ================================================================
+   CONFIG
+   ================================================================ */
+const KEY='drts_dcl_v1', SKEY='drts_dcl_session';
+const ITER=150000, IDLE_MS=20*60*1000, LOCK_AFTER=5, LOCK_MS=5*60*1000;
+const DEFAULT_ADMIN={u:'admin',pw:'Admin@123'};
+const RESERVED=['admin','administrator','root','system','superuser','support','drts','constructor','prototype'];
+const COMMON=['password','password1','password@1','password@123','admin@123','welcome@123','qwerty@123','abc@1234','p@ssw0rd','p@ssword1','12345678','letmein1','dental@123','student@123'];
+const COHORTS=['BDS 1st year','BDS 2nd year','BDS 3rd year','BDS Final year','CRRI / Intern','MDS','Faculty / Other'];
+const DUMMY_SALT='c2FsdHNhbHRzYWx0c2FsdA==';
+
+/* ================================================================
+   CONTENT — CASE STUDIES
+   ================================================================ */
+const CASES=[
+{id:1,title:'The lingering cold ache',tag:'Endodontics',patient:'32-year-old male, software engineer',
+ complaint:'Pain in the lower left back tooth for 4 days.',
+ history:['Sharp pain on cold drinks that lingers for more than 30 seconds after the drink is gone','Pain now wakes him at night; relieved partly by ibuprofen','No swelling, no fever; medically fit'],
+ exam:['36: deep occlusal caries, soft dentine','Cold test (36): intense pain lingering ~40 s; adjacent teeth normal','Percussion and palpation: not tender','Probing depths within normal limits'],
+ inv:'IOPA: deep radiolucency approaching the pulp; lamina dura and PDL space intact at apices.',
+ qs:[
+  {q:'What is the most likely pulpal and periapical diagnosis for 36?',o:['Symptomatic irreversible pulpitis with normal apical tissues','Reversible pulpitis','Pulp necrosis with symptomatic apical periodontitis','Cracked tooth syndrome'],a:0,
+   e:'Lingering pain after the stimulus is removed plus spontaneous night pain point to irreversible pulpitis. Normal percussion and an intact PDL space indicate the apical tissues are not yet involved.'},
+  {q:'Which single feature best separates irreversible from reversible pulpitis?',o:['Pain that lingers after the stimulus is removed','Pain on chewing sweet food','Presence of a deep restoration','Exaggerated response to electric pulp testing'],a:0,
+   e:'In reversible pulpitis pain is sharp and stops within seconds of removing the stimulus. Lingering or spontaneous pain signals irreversible inflammation.'},
+  {q:'What is the most appropriate definitive management?',o:['Pulpectomy and root canal treatment (vital pulp therapy such as full pulpotomy may be considered in selected cases)','Indirect pulp capping and review','Antibiotics for 5 days, then review','Desensitising toothpaste and occlusal adjustment'],a:0,
+   e:'Removal of the inflamed pulp relieves the pain. Antibiotics have no role in pulpitis: there is no spreading infection, and they do not reduce pulpal pain.'}],
+ take:'Lingering + spontaneous pain = irreversible pulpitis. Treat the pulp, not with antibiotics.'},
+
+{id:2,title:'The swollen cheek',tag:'Oral surgery / Emergencies',patient:'45-year-old female, school teacher',
+ complaint:'Throbbing pain and swelling of the right lower face for 2 days.',
+ history:['Pain started in a broken-down lower right tooth a week ago','Feels feverish; temperature at home 38.4 °C','Can swallow and breathe normally; type 2 diabetes on metformin (HbA1c 7.1%)'],
+ exam:['Extra-oral: diffuse swelling over right body of mandible, warm, mildly tender','Mouth opening 38 mm; floor of mouth soft, not raised','46: grossly carious, tender to percussion, no response to cold','Fluctuant swelling in the buccal vestibule opposite 46'],
+ inv:'IOPA: widened PDL space and ill-defined periapical radiolucency at 46.',
+ qs:[
+  {q:'What is the diagnosis?',o:['Acute apical abscess of 46','Periodontal abscess related to 46','Ludwig\'s angina','Acute pericoronitis'],a:0,
+   e:'A non-vital tooth that is tender to percussion, with a fluctuant swelling and periapical changes, is an acute apical abscess. A periodontal abscess usually involves a vital tooth with a deep pocket.'},
+  {q:'What is the best immediate management?',o:['Drain the pus (incision and drainage and/or access opening of 46) and prescribe antibiotics because of fever and diabetes','Antibiotics alone; treat the tooth after the swelling settles','Hot compresses and analgesics only','Refer for elective extraction in two weeks'],a:0,
+   e:'Drainage of pus is the key step. Antibiotics are added when there are systemic signs (fever, malaise) or the patient is medically compromised, as here.'},
+  {q:'Which finding would demand urgent hospital referral?',o:['Bilateral submandibular swelling with a raised floor of mouth and difficulty swallowing','A fluctuant vestibular swelling','Tenderness to percussion of 46','Mild submandibular lymphadenopathy'],a:0,
+   e:'Raised floor of mouth, dysphagia, drooling, voice change or breathing difficulty suggest spreading infection (e.g. Ludwig\'s angina) and airway risk.'}],
+ take:'If there is pus, drain it. Watch the airway: floor of mouth, swallowing, breathing.'},
+
+{id:3,title:'Pain behind the last tooth',tag:'Oral surgery',patient:'21-year-old male, dental student',
+ complaint:'Pain behind the lower right last tooth and difficulty opening the mouth for 3 days.',
+ history:['Bad taste in the mouth; pain worse on chewing','Similar episode six months ago, settled on its own','No fever; medically fit'],
+ exam:['48 partially erupted; operculum red, swollen, tender with pus on pressure','18 occludes on the swollen operculum','Mouth opening 25 mm','Right submandibular lymph node tender'],
+ inv:'Radiograph to be planned.',
+ qs:[
+  {q:'What is the diagnosis?',o:['Acute pericoronitis of 48','Alveolar osteitis','Periodontal abscess of 47','Temporomandibular joint disorder'],a:0,
+   e:'Inflammation of the soft tissue (operculum) over a partially erupted tooth, with trismus and a bad taste, is pericoronitis.'},
+  {q:'What is the most appropriate first-line management?',o:['Irrigate under the operculum, relieve trauma from 18, analgesics; antibiotics only if systemic involvement','Remove 48 immediately under local anaesthesia','Excise the operculum immediately','Prescribe antibiotics and send home without local treatment'],a:0,
+   e:'Local measures come first: saline or chlorhexidine irrigation, removing the occlusal trauma, and analgesia. Surgery is planned once the acute phase settles, especially for recurrent episodes.'},
+  {q:'Which radiograph is most useful to plan removal of 48?',o:['Panoramic radiograph (OPG), with CBCT if the roots appear close to the inferior alveolar canal','Bitewing radiograph','Upper standard occlusal view','Lateral cephalogram'],a:0,
+   e:'An OPG shows the angulation, depth and relation to the inferior alveolar canal. CBCT is added when the OPG shows signs of a close relationship to the canal.'}],
+ take:'Pericoronitis: local treatment first, remove the cause later.'},
+
+{id:4,title:'Bleeding gums and drifting teeth',tag:'Periodontics',patient:'48-year-old male, businessman',
+ complaint:'Bleeding gums and loose upper front teeth.',
+ history:['Smokes 15 cigarettes a day for 20 years','Not diabetic; no other medical history','Two molars extracted last year because they became loose'],
+ exam:['Generalised bleeding on probing','Probing depths 6–7 mm on several molars; CAL up to 6 mm','Grade I mobility of 11, 21; furcation involvement Class II on 46','Plaque score 78%'],
+ inv:'Full-mouth IOPA: horizontal bone loss to the middle third of roots (about 50% at the worst site).',
+ qs:[
+  {q:'Using the 2017 AAP/EFP classification, how is this case best staged and graded?',o:['Periodontitis Stage III, Grade C','Periodontitis Stage II, Grade A','Periodontitis Stage III, Grade B','Periodontitis Stage IV, Grade C'],a:0,
+   e:'CAL ≥5 mm, bone loss to the middle third, PD ≥6 mm and ≤4 teeth lost to periodontitis place this in Stage III. Bone loss/age is about 1.0 (Grade B), but smoking ≥10 cigarettes a day modifies it to Grade C.'},
+  {q:'Which factor shifts the grade to C?',o:['Smoking 10 or more cigarettes per day','Age over 45','Furcation involvement','Plaque score above 50%'],a:0,
+   e:'Grade modifiers are smoking (≥10/day → Grade C) and diabetes (HbA1c ≥7% → Grade C).'},
+  {q:'What is the first step of therapy?',o:['Step 1: oral hygiene instruction, risk-factor control including smoking cessation, supragingival plaque and calculus removal','Immediate periodontal flap surgery','Extraction of all mobile teeth','Systemic antibiotics as the main treatment'],a:0,
+   e:'The EFP S3 guideline starts with behaviour change and risk-factor control (Step 1), followed by subgingival instrumentation (Step 2) and surgery only for residual deep pockets (Step 3).'}],
+ take:'Stage = severity and complexity; Grade = rate of progression and risk (smoking, diabetes).'},
+
+{id:5,title:'White patches under the denture',tag:'Oral medicine',patient:'70-year-old female, homemaker',
+ complaint:'Burning sensation in the mouth for 10 days.',
+ history:['Complete denture wearer for 8 years; wears dentures day and night','Asthma, uses an inhaled corticosteroid twice daily','Completed a course of amoxicillin two weeks ago'],
+ exam:['Creamy white curd-like patches on the palate and buccal mucosa','Patches wipe off with gauze, leaving a red, raw base','Angular cheilitis at both corners of the mouth'],
+ inv:'Smear (if needed): fungal hyphae on PAS stain.',
+ qs:[
+  {q:'What is the most likely diagnosis?',o:['Pseudomembranous candidiasis','Leukoplakia','Oral lichen planus','Frictional keratosis'],a:0,
+   e:'White patches that wipe off leaving an erythematous base are typical of pseudomembranous candidiasis. Leukoplakia and lichen planus do not rub off.'},
+  {q:'Which predisposing factors are present here?',o:['All of these: overnight denture wear, inhaled corticosteroid, recent antibiotics','Overnight denture wear only','Recent antibiotics only','None; candidiasis is purely age-related'],a:0,
+   e:'Dentures (especially worn overnight), inhaled steroids without rinsing, broad-spectrum antibiotics, diabetes, immunosuppression and xerostomia all favour Candida overgrowth.'},
+  {q:'What is the most appropriate management?',o:['Topical antifungal (e.g. nystatin suspension or miconazole gel), denture hygiene, dentures out at night, rinse after inhaler use','Surgical excision of the patches','Systemic corticosteroids','Chlorhexidine alone; antifungals are not needed'],a:0,
+   e:'Treat the infection and remove the cause. Note: miconazole interacts with warfarin, so check medications first.'}],
+ take:'Wipes off = Candida. Fix the denture habits and the inhaler technique.'},
+
+{id:6,title:'Ulcers that keep coming back',tag:'Oral medicine',patient:'19-year-old female, college student',
+ complaint:'Painful mouth ulcers that recur almost every month.',
+ history:['Each episode: 2–3 ulcers that heal by themselves in 7–10 days without scarring','Worse during exam stress','No genital ulcers, eye problems, skin rashes or bowel symptoms'],
+ exam:['Two round ulcers (~5 mm) on the labial mucosa with yellow-grey floor and red halo','Non-keratinised mucosa only; no induration','No lymphadenopathy'],
+ inv:'None required at this stage.',
+ qs:[
+  {q:'What is the diagnosis?',o:['Minor recurrent aphthous stomatitis','Primary herpetic gingivostomatitis','Behçet\'s disease','Squamous cell carcinoma'],a:0,
+   e:'Small (<10 mm), round, recurrent ulcers on non-keratinised mucosa that heal in 1–2 weeks without scarring are minor aphthae.'},
+  {q:'If the ulcers worsened or became atypical, which screening tests are most useful?',o:['Full blood count, ferritin, vitamin B12, folate and coeliac serology','Serum calcium and phosphate','Liver enzymes','Blood culture'],a:0,
+   e:'Haematinic deficiency and coeliac disease are common treatable causes of aphthous-like ulceration.'},
+  {q:'Which feature in any oral ulcer mandates biopsy?',o:['A single ulcer that has not healed in 2–3 weeks, especially with induration or rolled margins','Pain on eating spicy food','Ulcers that heal within 10 days','Ulcers that occur during stress'],a:0,
+   e:'Persistent, indurated or non-healing ulcers must be biopsied to exclude malignancy.'}],
+ take:'Recurrent and self-healing = aphthae. Non-healing beyond 3 weeks = biopsy.'},
+
+{id:7,title:'Sharp pain on brushing',tag:'Conservative dentistry',patient:'28-year-old female, banker',
+ complaint:'Sharp shooting pain from several teeth with cold water and while brushing.',
+ history:['Pain lasts a second or two and stops immediately','Brushes vigorously with a hard brush, horizontal strokes','No night pain'],
+ exam:['V-shaped cervical notches on 14, 15, 24, 25','Gingival recession of 2 mm on these teeth','Air blast from triple syringe reproduces sharp pain; no caries'],
+ inv:'Not required.',
+ qs:[
+  {q:'What is the diagnosis?',o:['Dentine hypersensitivity due to toothbrush abrasion and recession','Reversible pulpitis due to caries','Cracked cusp syndrome','Irreversible pulpitis'],a:0,
+   e:'Short, sharp pain from exposed dentine in response to thermal, tactile or evaporative stimuli, with no other dental cause, is dentine hypersensitivity.'},
+  {q:'Which theory best explains the mechanism?',o:['Brännström\'s hydrodynamic theory','Odontoblast transduction theory','Direct neural stimulation theory','Gate control theory'],a:0,
+   e:'Stimuli cause rapid fluid movement within open dentinal tubules, which activates nerve endings at the pulp–dentine border.'},
+  {q:'What is the first-line management?',o:['Desensitising toothpaste (potassium nitrate or stannous fluoride), soft brush and correct brushing technique; restore deep notches with GIC if needed','Root canal treatment of affected teeth','Extraction of the most sensitive tooth','Full-coverage crowns on all affected teeth'],a:0,
+   e:'Remove the cause, then occlude tubules or desensitise nerves. Restorations or grafting are for deep lesions or persistent sensitivity.'}],
+ take:'Sharp, short, stimulus-bound pain with exposed dentine: think hydrodynamic. Fix the brushing.'},
+
+{id:8,title:'Worse on day three',tag:'Oral surgery',patient:'35-year-old male, auto driver',
+ complaint:'Severe pain at the extraction site, three days after removal of 36.',
+ history:['Extraction was difficult and took 40 minutes','Smokes about 10 cigarettes a day; resumed smoking the same evening','Pain radiates to the ear and is not relieved by paracetamol'],
+ exam:['Empty socket with exposed greyish bone and no blood clot','Food debris in the socket; foul odour','No swelling, no fever, no lymphadenopathy'],
+ inv:'IOPA if a retained root or fracture is suspected.',
+ qs:[
+  {q:'What is the diagnosis?',o:['Alveolar osteitis (dry socket)','Acute osteomyelitis','Retained root fragment','Post-extraction abscess'],a:0,
+   e:'Severe pain starting 2–4 days after extraction, with an empty socket, exposed bone and halitosis but no fever or swelling, is dry socket.'},
+  {q:'What is the most appropriate management?',o:['Gentle saline irrigation, light debridement, an obtundent dressing (e.g. zinc oxide–eugenol based) and analgesics','Systemic antibiotics as the main treatment','Vigorous curettage to induce fresh bleeding','Extraction of the adjacent tooth'],a:0,
+   e:'Treatment is symptomatic: clean the socket, place a soothing dressing, give analgesia and review. Antibiotics are not routinely needed.'},
+  {q:'Which factor in this history most increased his risk?',o:['Smoking, together with a difficult, traumatic extraction','Being male','Age over 30','Extraction of a mandibular premolar'],a:0,
+   e:'Smoking, traumatic or difficult extraction, mandibular molar site, oral contraceptives and previous dry socket all raise the risk.'}],
+ take:'Day 2–4 pain with an empty socket: irrigate, dress, reassure.'},
+
+{id:9,title:'Burning mouth, shrinking opening',tag:'Oral medicine',patient:'27-year-old male, shop owner',
+ complaint:'Burning sensation with spicy food and gradually reducing mouth opening for one year.',
+ history:['Chews gutka (areca nut with tobacco) 6–8 times a day for 6 years','No history of trauma to the jaw','No skin tightening elsewhere'],
+ exam:['Blanched, marble-like buccal mucosa','Palpable vertical fibrous bands in both buccal mucosae','Inter-incisal mouth opening 22 mm','Shrunken, bud-like uvula'],
+ inv:'Biopsy if any red or white change or ulceration is present.',
+ qs:[
+  {q:'What is the diagnosis?',o:['Oral submucous fibrosis','Systemic sclerosis (scleroderma)','Oral lichen planus','Temporomandibular joint ankylosis'],a:0,
+   e:'Blanching, palpable fibrous bands, burning with spicy food and progressive trismus in an areca nut user are classic for OSMF.'},
+  {q:'What is the key causative factor?',o:['Arecoline and other alkaloids in areca nut','Smoking tobacco','Chilli consumption','Iron overdose'],a:0,
+   e:'Areca nut alkaloids stimulate fibroblasts and increase collagen; tannins and flavonoids reduce collagen breakdown.'},
+  {q:'Why does this patient need long-term follow-up?',o:['OSMF is an oral potentially malignant disorder with a risk of transformation to squamous cell carcinoma','The fibrous bands always disappear after 6 months','To monitor for jaw fractures','Follow-up is not needed once mouth opening improves'],a:0,
+   e:'Habit cessation is the most important intervention, combined with mouth-opening exercises. Lifelong surveillance is needed because OSMF can progress to oral cancer.'}],
+ take:'Areca nut + blanching + bands + trismus = OSMF. Stop the habit, follow up for life.'},
+
+{id:10,title:'The knocked-out incisor',tag:'Paediatric dentistry / Trauma',patient:'9-year-old boy, brought by his father',
+ complaint:'Upper front tooth knocked out after a fall at school 20 minutes ago.',
+ history:['Father picked up the tooth by the crown and placed it in cold milk','No loss of consciousness, no vomiting','Immunisations up to date'],
+ exam:['11 avulsed; socket intact with a blood clot; no alveolar fracture','Tooth: root clean, apex wide open (immature)','Mild lip laceration'],
+ inv:'IOPA after replantation to confirm position.',
+ qs:[
+  {q:'What is the best immediate management?',o:['Rinse the root gently with saline, replant 11, confirm position, and apply a flexible splint','Keep the tooth in milk and book an appointment for next week','Do not replant because the patient is a child','Perform root canal treatment outside the mouth, then replant'],a:0,
+   e:'Storage in milk with a short extra-oral time gives a good chance of PDL healing. Handle by the crown, rinse gently and replant as soon as possible (IADT guidelines).'},
+  {q:'What splint is recommended and for how long?',o:['Flexible splint for about 2 weeks','Rigid splint for 8 weeks','Flexible splint for 6 months','No splint is required'],a:0,
+   e:'Avulsed teeth need a passive, flexible splint for roughly 2 weeks to allow physiological movement and PDL healing.'},
+  {q:'Why is root canal treatment not started immediately in this tooth?',o:['With an open apex, pulp revascularisation is possible; monitor and treat only if signs of necrosis or infection appear','Immature teeth never need root canal treatment','Root canal treatment is always started within 24 hours in children','The tooth will be extracted later anyway'],a:0,
+   e:'Immature teeth with open apices may revascularise. Mature teeth, by contrast, should have root canal treatment started within about 2 weeks.'}],
+ take:'Avulsion: time is everything. Replant, flexible splint ~2 weeks, follow up closely.'}
+];
+
+/* ================================================================
+   RADIOGRAPH RENDERING (schematic SVG)
+   ================================================================ */
+const C={air:'#111',soft:'#262626',bone:'#666',cortex:'#909090',enamel:'#ededed',dentin:'#bebebe',root:'#b1b1b1',pulp:'#474747',pdl:'#2a2a2a',lamina:'#aaa',dark:'#2b2b2b',resto:'#fcfcfc',gp:'#f3f3f3'};
+let UID=0;
+const uid=()=> 'r'+(++UID)+'_';
+function defs(P,seed){
+ return `<defs>
+<filter id="${P}soft" x="-2%" y="-2%" width="104%" height="104%"><feGaussianBlur stdDeviation="0.7"/></filter>
+<filter id="${P}b1" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.1"/></filter>
+<filter id="${P}b2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.3"/></filter>
+<filter id="${P}b3" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.4"/></filter>
+<filter id="${P}b4" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+<filter id="${P}grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="${seed}"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.9 0 0 0 -0.4"/></filter>
+<filter id="${P}trab" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.075 0.12" numOctaves="3" seed="${seed+7}"/><feColorMatrix type="matrix" values="0 0 0 0 0.85 0 0 0 0 0.85 0 0 0 0 0.85 2.0 0 0 0 -0.9"/></filter>
+<radialGradient id="${P}vig" cx="50%" cy="50%" r="72%"><stop offset="62%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".55"/></radialGradient>
+</defs>`;
+}
+function crownPath(x,w,top,cej){const l=x-w/2,r=x+w/2,h=cej-top,i=w*0.07;
+ return `M${l+i},${cej} C${l-i*0.3},${cej-h*0.38} ${l},${top+h*0.2} ${l+w*0.13},${top+h*0.06} Q${x},${top-h*0.07} ${r-w*0.13},${top+h*0.06} C${r},${top+h*0.2} ${r+i*0.3},${cej-h*0.38} ${r-i},${cej} Z`;}
+function rootsOf(t){const {x,w,kind}=t;
+ if(kind==='molar') return [{xl:x-w/2+5,xr:x-3,ax:x-w/4-4},{xl:x+3,xr:x+w/2-5,ax:x+w/4+4}];
+ return [{xl:x-w/2+6,xr:x+w/2-6,ax:x}];}
+function rootPath(r,cej,apex){const mid=cej+(apex-cej)*0.5;
+ return `M${r.xl},${cej} L${r.xr},${cej} C${r.xr+1},${mid} ${r.ax+6},${apex-22} ${r.ax+3},${apex-2} Q${r.ax},${apex+4} ${r.ax-3},${apex-2} C${r.ax-6},${apex-22} ${r.xl-1},${mid} ${r.xl},${cej} Z`;}
+function tooth(t,P){
+ const {x,w,top,cej,apex,kind}=t, m=t.mods||{}, sw=t.sw||1, h=cej-top;
+ const roots=rootsOf(t);
+ let shape=`<path d="${roots.map(r=>rootPath(r,cej,apex)).join(' ')}"/>`;
+ if(m.hyper){const r=roots[0]; shape+=`<ellipse cx="${r.ax}" cy="${apex-16}" rx="${(r.xr-r.xl)*0.46}" ry="24"/>`;}
+ const clip=t.clip?` clip-path="url(#${t.clip})"`:'';
+ let s='';
+ s+=`<g${clip} fill="none" stroke="${C.lamina}" stroke-width="${8*sw}">${shape}</g>`;
+ s+=`<g${clip} fill="none" stroke="${C.pdl}" stroke-width="${(m.widePdl?7:5)*sw}">${shape}</g>`;
+ if(m.pa) for(const p of m.pa) s+=`<ellipse cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" fill="${C.dark}" filter="url(#${P}b3)"/>`;
+ s+=`<g fill="${C.root}">${shape}</g>`;
+ s+=`<path d="${crownPath(x,w,top,cej)}" fill="${C.enamel}"/>`;
+ s+=`<path d="${crownPath(x,w*0.78,top+h*0.16,cej+1)}" fill="${C.dentin}"/>`;
+ const pulpFill=m.rct?C.gp:C.pulp;
+ if(kind==='molar') s+=`<rect x="${x-w*0.21}" y="${cej-h*0.3}" width="${w*0.42}" height="${h*0.38}" rx="${6*sw}" fill="${pulpFill}"/>`;
+ else s+=`<ellipse cx="${x}" cy="${cej-h*0.12}" rx="${w*0.11}" ry="${h*0.28}" fill="${pulpFill}"/>`;
+ for(const r of roots){
+  const cx=(r.xl+r.xr)/2, d=`M${cx},${cej-4*sw} Q${(cx+r.ax)/2},${(cej+apex)/2} ${r.ax},`;
+  s+=`<path d="${d}${apex-4*sw}" stroke="${C.pulp}" stroke-width="${3.2*sw}" fill="none" stroke-linecap="round"/>`;
+  if(m.rct){const end=apex-(m.rct.short||2); s+=`<path d="M${cx},${cej-4} L${cx+(r.ax-cx)*((end-cej)/(apex-cej))},${end}" stroke="${C.gp}" stroke-width="5" fill="none" stroke-linecap="round"/>`;}
+ }
+ if(m.intRes) s+=`<ellipse cx="${x}" cy="${m.intRes.y}" rx="${m.intRes.rx}" ry="${m.intRes.ry}" fill="${C.pulp}" filter="url(#${P}b1)"/>`;
+ if(m.cap) s+=`<path d="${crownPath(x,w+2,top-1,cej+2)}" fill="${C.resto}"/>`;
+ if(m.resto) s+=`<path d="M${x-w*0.27},${top-2} L${x+w*0.27},${top-2} L${x+w*0.2},${top+h*0.42} L${x-w*0.2},${top+h*0.42} Z" fill="${C.resto}"/>`;
+ if(m.occCaries) s+=`<ellipse cx="${x}" cy="${top+h*0.4}" rx="${w*0.25}" ry="${h*0.42}" fill="#363636" filter="url(#${P}b2)"/>`;
+ if(m.ipCaries){const sd=m.ipCaries.side, sz=m.ipCaries.size||16, ex=sd==='r'?x+w/2-1:x-w/2+1, dir=sd==='r'?-1:1, y0=top+h*0.36;
+  s+=`<path d="M${ex},${y0} L${ex+dir*sz},${y0+11} L${ex},${y0+24} Z" fill="#383838" filter="url(#${P}b1)"/><ellipse cx="${ex+dir*(sz+4)}" cy="${y0+14}" rx="${sz*0.55}" ry="${sz*0.72}" fill="#444" filter="url(#${P}b2)"/>`;}
+ if(m.fracture){const y=m.fracture.y; s+=`<path d="M${x-w/2+2},${y-5} L${x+w/2-2},${y+5}" stroke="#1d1d1d" stroke-width="3.2"/>`;}
+ if(m.calc){const r=roots[0];
+  if(m.calc.includes('l')) s+=`<path d="M${r.xl+1},${cej+2} L${r.xl-8},${cej+9} L${r.xl-3},${cej+13} L${r.xl+1},${cej+19} Z" fill="#e4e4e4"/>`;
+  if(m.calc.includes('r')) s+=`<path d="M${r.xr-1},${cej+2} L${r.xr+8},${cej+9} L${r.xr+3},${cej+13} L${r.xr-1},${cej+19} Z" fill="#e4e4e4"/>`;}
+ if(m.condense) s+=`<ellipse cx="${x}" cy="${apex+2}" rx="${m.condense.rx}" ry="${m.condense.ry}" fill="#dadada" opacity=".55" filter="url(#${P}b4)"/>`;
+ return s;
+}
+function frame(W,H,P,inner,label,seed,dotX){
+ return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${label}">${defs(P,seed)}
+<clipPath id="${P}film"><rect width="${W}" height="${H}" rx="${W>500?22:16}"/></clipPath>
+<g clip-path="url(#${P}film)"><g filter="url(#${P}soft)">${inner}</g>
+<rect width="${W}" height="${H}" filter="url(#${P}grain)" opacity=".5"/>
+<rect width="${W}" height="${H}" fill="url(#${P}vig)"/></g>
+${dotX!=null?`<circle cx="${dotX}" cy="18" r="4.5" fill="#050505" stroke="#5a5a5a"/>`:''}
+<g class="mk"></g></svg>`;
+}
+function iopaSVG(sc,P,label){
+ const W=400,H=300, bp=sc.bone||`M0,${sc.crest} L${W},${sc.crest} L${W},${H} L0,${H} Z`, cl=sc.crestLine||`M0,${sc.crest} L${W},${sc.crest}`;
+ let body=`<rect width="${W}" height="${H}" fill="${C.air}"/><rect y="${sc.softY||84}" width="${W}" height="${H}" fill="${C.soft}"/>
+<clipPath id="${P}bc"><path d="${bp}"/></clipPath>
+<path d="${bp}" fill="${C.bone}"/><rect width="${W}" height="${H}" filter="url(#${P}trab)" clip-path="url(#${P}bc)" opacity=".38"/>
+<path d="${cl}" fill="none" stroke="${C.cortex}" stroke-width="2.4"/>
+${sc.under?sc.under(P):''}${sc.teeth.map(t=>tooth({...t,clip:P+'bc'},P)).join('')}${sc.over?sc.over(P):''}`;
+ if(sc.flip) body=`<g transform="matrix(1 0 0 -1 0 ${H})">${body}</g>`;
+ return frame(W,H,P,body,label,sc.seed||3,sc.flip?382:18);
+}
+function bitewingSVG(sc,P,label){
+ const W=400,H=300,crest=238, bp=`M0,${crest} L${W},${crest} L${W},${H} L0,${H} Z`;
+ const half=(teeth)=>`<rect y="196" width="${W}" height="104" fill="${C.soft}"/><path d="${bp}" fill="${C.bone}"/><rect width="${W}" height="${H}" filter="url(#${P}trab)" clip-path="url(#${P}bc)" opacity=".38"/><path d="M0,${crest} L${W},${crest}" stroke="${C.cortex}" stroke-width="2.4"/>${teeth.map(t=>tooth({...t,top:157,cej:221,apex:372,clip:P+'bc'},P)).join('')}`;
+ const body=`<rect width="${W}" height="${H}" fill="${C.air}"/><clipPath id="${P}bc"><path d="${bp}"/></clipPath>${half(sc.lower)}<g transform="matrix(1 0 0 -1 0 ${H})">${half(sc.upper)}</g>`;
+ return frame(W,H,P,body,label,sc.seed||5,18);
+}
+
+/* ---------- Panoramic ---------- */
+const occ=x=>{const d=(x-400)/250;return 205+22*(1-Math.min(1,d*d));};
+const slope=x=>Math.atan(-44*(x-400)/62500)*180/Math.PI;
+const PW={1:22,2:20,3:24,4:24,5:24,6:34,7:33,8:32};
+const PANO_TEETH=(()=>{const L=[];for(const side of [-1,1]){let pos=400+side*1.5;for(let n=1;n<=8;n++){const w=PW[n],x=pos+side*w/2;pos=x+side*(w/2+3);L.push({n,side,x,w});}}return L;})();
+const px=(side,n)=>PANO_TEETH.find(t=>t.side===side&&t.n===n).x;
+function panoTooth(T,upper,P,mods={},o={}){
+ const x=T.x+(o.dx||0), yo=occ(T.x), ang=slope(T.x);
+ const kind=o.kind||(T.n<=3?'ant':T.n<=5?'pm':'molar'), w=o.w||T.w;
+ const ch=o.ch||(kind==='molar'?24:27);
+ let L=o.L||(upper?(T.n===3?58:{ant:48,pm:44,molar:38}[kind]):(T.n===3?60:{ant:46,pm:50,molar:46}[kind]));
+ if(mods.shortRoot) L-=mods.shortRoot;
+ const top=yo+3+(o.depth||0), cej=top+ch, apex=cej+L;
+ const s=tooth({x,w,kind,top,cej,apex,mods,sw:0.5},P);
+ return upper?`<g transform="rotate(${ang.toFixed(2)} ${T.x} ${yo}) matrix(1 0 0 -1 0 ${2*yo})">${s}</g>`:`<g transform="rotate(${ang.toFixed(2)} ${T.x} ${yo})">${s}</g>`;
+}
+function germ(x,yTop,w,ch,P,upper,yo){
+ const g=`<ellipse cx="${x}" cy="${yTop+ch*0.55}" rx="${w/2+4}" ry="${ch*0.75+3}" fill="#2a2a2a" stroke="#8c8c8c" stroke-width="1.2"/><path d="${crownPath(x,w,yTop,yTop+ch)}" fill="${C.enamel}"/><path d="${crownPath(x,w*0.74,yTop+ch*0.2,yTop+ch+1)}" fill="${C.dentin}"/>`;
+ return upper?`<g transform="matrix(1 0 0 -1 0 ${2*yo})">${g}</g>`:g;
+}
+function panoSVG(sc,P,label){
+ const W=800,H=400;
+ const mand='M112,92 C92,95 86,120 96,142 L92,250 C92,300 110,325 150,336 C250,366 330,382 400,382 C470,382 550,366 650,336 C690,325 708,300 708,250 L704,142 C714,120 708,95 688,92 C670,92 660,108 658,126 C652,158 636,162 628,146 C620,130 616,112 614,104 L642,232 Q400,296 158,232 L186,104 C184,112 180,130 172,146 C164,162 148,158 142,126 C140,108 130,92 112,92 Z';
+ const maxi='M158,174 C150,140 196,108 262,100 L538,100 C604,108 650,140 642,174 Q400,210 158,174 Z';
+ const sinR=sc.sinusOpaque;
+ let b=`<rect width="${W}" height="${H}" fill="${C.air}"/><ellipse cx="400" cy="230" rx="410" ry="215" fill="#1d1d1d"/>
+<rect x="22" y="40" width="40" height="330" fill="#5a5a5a" opacity=".22" filter="url(#${P}b4)"/><rect x="738" y="40" width="40" height="330" fill="#5a5a5a" opacity=".22" filter="url(#${P}b4)"/>
+<clipPath id="${P}mc"><path d="${mand}"/></clipPath><clipPath id="${P}xc"><path d="${maxi}"/></clipPath>
+<path d="${maxi}" fill="#5c5c5c"/><rect width="${W}" height="${H}" filter="url(#${P}trab)" clip-path="url(#${P}xc)" opacity=".3"/>
+<ellipse cx="255" cy="134" rx="72" ry="32" fill="#262626" stroke="#8c8c8c" stroke-width="3"/>
+<ellipse cx="545" cy="134" rx="72" ry="32" fill="${sinR?'#5d5d5d':'#262626'}" stroke="${sinR?'#6d6d6d':'#8c8c8c'}" stroke-width="3"/>
+${sinR?`<ellipse cx="545" cy="134" rx="66" ry="28" fill="#6b6b6b" opacity=".6" filter="url(#${P}b4)"/>`:''}
+<ellipse cx="400" cy="118" rx="58" ry="26" fill="#222"/><path d="M400,94 L400,142" stroke="#7d7d7d" stroke-width="5"/>
+<path d="M172,160 Q400,132 628,160" fill="none" stroke="#a5a5a5" stroke-width="7" opacity=".65"/>
+<path d="M190,180 Q400,152 610,180" fill="none" stroke="#000" stroke-width="12" opacity=".28" filter="url(#${P}b2)"/>
+<path d="M140,98 C190,84 250,84 300,96" fill="none" stroke="#8a8a8a" stroke-width="7" opacity=".5"/><path d="M660,98 C610,84 550,84 500,96" fill="none" stroke="#8a8a8a" stroke-width="7" opacity=".5"/>
+<path d="${mand}" fill="${C.bone}"/><rect width="${W}" height="${H}" filter="url(#${P}trab)" clip-path="url(#${P}mc)" opacity=".34"/>
+<g clip-path="url(#${P}mc)" fill="none"><path d="M120,190 C140,262 220,300 300,302" stroke="#858585" stroke-width="11"/><path d="M120,190 C140,262 220,300 300,302" stroke="#4c4c4c" stroke-width="6"/>
+<path d="M680,190 C660,262 580,300 500,302" stroke="#858585" stroke-width="11"/><path d="M680,190 C660,262 580,300 500,302" stroke="#4c4c4c" stroke-width="6"/></g>
+<path d="M92,250 C92,300 110,325 150,336 C250,366 330,382 400,382 C470,382 550,366 650,336 C690,325 708,300 708,250" fill="none" stroke="${C.cortex}" stroke-width="7" clip-path="url(#${P}mc)"/>
+<path d="M96,142 L92,250 M704,142 L708,250" stroke="#848484" stroke-width="5" clip-path="url(#${P}mc)"/>
+${sc.under?sc.under(P):''}`;
+ for(const T of PANO_TEETH){
+  for(const upper of [true,false]){
+   const q=upper?(T.side<0?1:2):(T.side<0?4:3), fdi=q*10+T.n;
+   if(sc.skip&&sc.skip.includes(fdi)) continue;
+   const o=(sc.opt&&sc.opt[fdi])||{};
+   b+=panoTooth(T,upper,P,(sc.mods&&sc.mods[fdi])||{},o);
+  }
+ }
+ if(sc.over) b+=sc.over(P);
+ return frame(W,H,P,b,label,sc.seed||9,null);
+}
+/* mixed-dentition helpers */
+function mixedPano(P,label){
+ const skip=[], opt={}, extra=[];
+ for(const T of PANO_TEETH){for(const upper of [true,false]){
+  const q=upper?(T.side<0?1:2):(T.side<0?4:3), fdi=q*10+T.n, yo=occ(T.x);
+  if(T.n===8){skip.push(fdi); extra.push(upper?`<g transform="matrix(1 0 0 -1 0 ${2*yo})"><circle cx="${T.x}" cy="${yo+38}" r="12" fill="#2a2a2a" stroke="#8c8c8c" stroke-width="1.2"/></g>`:`<circle cx="${T.x}" cy="${yo+38}" r="12" fill="#2a2a2a" stroke="#8c8c8c" stroke-width="1.2"/>`);}
+  else if(T.n===7){skip.push(fdi); extra.push(germ(T.x,yo+16,28,20,P,upper,yo));}
+  else if(T.n>=3&&T.n<=5){
+   opt[fdi]={w:T.n===3?17:T.n===4?21:26,ch:18,L:24,kind:T.n===3?'ant':'molar'};
+   extra.push(germ(T.x,yo+(T.n===3?50:40),T.n===3?18:20,T.n===3?22:19,P,upper,yo));
+  }
+ }}
+ return panoSVG({skip,opt,over:()=>extra.join(''),seed:21},P,label);
+}
+const MIXED_HOT=(()=>{const h=[];for(const side of [-1,1])for(const n of [4,5]){const x=px(side,n),yo=occ(x);h.push({x,y:yo+50,r:22},{x,y:yo-50,r:22});}return h;})();
+
+/* ================================================================
+   CONTENT — INTRAORAL RADIOGRAPHS (IOPA / bitewing)
+   ================================================================ */
+const MP=(m={})=>[
+ {x:52,w:56,kind:'pm',top:44,cej:112,apex:268,mods:m.pm||{}},
+ {x:160,w:94,kind:'molar',top:40,cej:112,apex:262,mods:m.m1||{}},
+ {x:276,w:90,kind:'molar',top:42,cej:112,apex:258,mods:m.m2||{}},
+ {x:386,w:86,kind:'molar',top:50,cej:116,apex:250,mods:m.m3||{}}];
+const MAXANT=(m={})=>[
+ {x:42,w:54,kind:'ant',top:30,cej:118,apex:262,mods:m.l1||{}},
+ {x:136,w:72,kind:'ant',top:22,cej:120,apex:282,mods:m.c1||{}},
+ {x:232,w:72,kind:'ant',top:22,cej:120,apex:282,mods:m.c2||{}},
+ {x:328,w:56,kind:'ant',top:30,cej:118,apex:262,mods:m.l2||{}},
+ {x:410,w:60,kind:'ant',top:30,cej:118,apex:270}];
+const RADIO=[
+{id:1,title:'Proximal caries',region:'Right premolar–molar bitewing',note:'22-year-old with food lodgement between the lower right premolar and first molar. Routine check-up.',
+ svg:(P,l)=>bitewingSVG({lower:[{x:40,w:56,kind:'pm'},{x:101,w:58,kind:'pm',mods:{ipCaries:{side:'r',size:16}}},{x:176,w:92,kind:'molar',mods:{resto:true}},{x:268,w:90,kind:'molar'},{x:358,w:88,kind:'molar'}],
+  upper:[{x:66,w:58,kind:'pm'},{x:128,w:60,kind:'pm'},{x:206,w:94,kind:'molar'},{x:301,w:92,kind:'molar'},{x:394,w:88,kind:'molar'}]},P,l),
+ hot:[{x:121,y:197,r:24}],
+ q:'What is the finding at the area you marked?',
+ o:['Proximal caries extending into dentine','Cervical burnout (radiographic artefact)','Mach band effect at the dentino-enamel junction','Overhanging proximal restoration'],a:0,
+ e:'A triangular radiolucency at or just below the contact point that breaches enamel and spreads along the DEJ into dentine is proximal caries. Cervical burnout lies lower, at the tooth neck between the enamel and alveolar crest, and usually appears on several teeth.',
+ k:['Located at or just below the contact point','Breaches enamel and spreads along the DEJ','Bitewing is the view of choice for proximal caries']},
+{id:2,title:'Periapical radiolucency',region:'Mandibular left molar IOPA',note:'38-year-old; 36 has a deep carious lesion and does not respond to cold testing.',
+ svg:(P,l)=>iopaSVG({crest:126,teeth:MP({m1:{occCaries:true,pa:[{x:160,y:256,rx:52,ry:30}]}})},P,l),
+ hot:[{x:160,y:255,r:44}],
+ q:'What is the most likely interpretation?',
+ o:['Periapical radiolucency: apical periodontitis (granuloma or cyst) of a non-vital tooth','Mental foramen superimposed on the apex','Normal marrow space','Lateral periodontal cyst'],a:0,
+ e:'Caries reaching the pulp, loss of lamina dura at the apices and a radiolucency continuous with the PDL space indicate apical periodontitis. The mental foramen lies near premolar apices, keeps the lamina dura intact and shifts position with a change in angulation.',
+ k:['Loss of lamina dura at the apex','Radiolucency continuous with the PDL space','Associated non-vital tooth with deep caries']},
+{id:3,title:'Condensing osteitis',region:'Mandibular right molar IOPA',note:'50-year-old; 46 has a large old restoration and occasional dull ache. Tooth responds abnormally to cold.',
+ svg:(P,l)=>iopaSVG({crest:126,seed:11,teeth:MP({m1:{resto:true,widePdl:true,condense:{rx:46,ry:30}}})},P,l),
+ hot:[{x:160,y:262,r:42}],
+ q:'What is the radiopacity at the apices most likely to be?',
+ o:['Condensing osteitis (focal sclerosing osteomyelitis)','Idiopathic osteosclerosis','Hypercementosis','Cemento-osseous dysplasia (mature stage)'],a:0,
+ e:'A diffuse radiopacity at the apex of a tooth with an inflamed or non-vital pulp, often with a widened PDL space, is condensing osteitis. Idiopathic osteosclerosis occurs with vital teeth and a normal PDL. Hypercementosis is attached to the root and surrounded by a PDL space; mature COD has a radiolucent rim.',
+ k:['Diffuse, poorly defined radiopacity','Associated with pulpal inflammation','No radiolucent rim separating it from bone']},
+{id:4,title:'Under-extended root canal filling',region:'Mandibular left molar IOPA',note:'41-year-old; root canal treatment on 36 two years ago. Now mild tenderness on biting.',
+ svg:(P,l)=>iopaSVG({crest:126,seed:15,teeth:MP({m1:{rct:{short:26},cap:true,pa:[{x:132,y:258,rx:19,ry:17},{x:188,y:258,rx:19,ry:17}]},m2:{resto:true}})},P,l),
+ hot:[{x:132,y:250,r:30},{x:188,y:250,r:30}],
+ q:'What does this radiograph show?',
+ o:['Under-extended root canal filling with persistent apical lesions','Over-extended root canal filling','Separated instrument in the canal','Adequate obturation with a healed periapex'],a:0,
+ e:'The obturation ends about 4 mm short of the radiographic apex, leaving an unfilled apical canal, and apical radiolucencies persist. An ideal filling ends 0–2 mm short of the radiographic apex. Non-surgical retreatment is usually the first option.',
+ k:['Gutta-percha ends well short of the apex','Unfilled, uncleaned apical canal','Persistent apical radiolucency = treatment failure']},
+{id:5,title:'Horizontal bone loss',region:'Mandibular right posterior IOPA',note:'52-year-old smoker with bleeding gums and generalised probing depths of 5–6 mm.',
+ svg:(P,l)=>iopaSVG({bone:'M0,186 Q50,177 98,184 T206,183 T318,187 T400,182 L400,300 L0,300 Z',crestLine:'M0,186 Q50,177 98,184 T206,183 T318,187 T400,182',softY:90,seed:19,
+  teeth:MP({pm:{calc:'r'},m1:{calc:'lr'},m2:{calc:'l'}})},P,l),
+ hot:[{x:96,y:184,r:30},{x:219,y:184,r:30},{x:332,y:186,r:30}],
+ q:'How would you describe the alveolar bone?',
+ o:['Generalised horizontal bone loss','Vertical (angular) bone loss','Normal alveolar crest level','Cervical burnout'],a:0,
+ e:'The crest normally lies 1.5–2 mm below the CEJ. Here it has moved well apically but stays roughly parallel to a line joining adjacent CEJs, which defines horizontal bone loss. Express it as a percentage of root length to help stage periodontitis.',
+ k:['Crest far apical to the CEJ','Crest parallel to the CEJ line','Loss of crestal cortication']},
+{id:6,title:'Vertical (angular) bone defect',region:'Mandibular left molar IOPA',note:'44-year-old; isolated 8 mm pocket on the mesial of 37.',
+ svg:(P,l)=>iopaSVG({bone:'M0,126 L208,126 L230,210 L236,210 L236,126 L400,126 L400,300 L0,300 Z',crestLine:'M0,126 L208,126 L230,210 L236,210 L236,126 L400,126',seed:23,teeth:MP({m2:{calc:'l'}})},P,l),
+ hot:[{x:226,y:172,r:30}],
+ q:'What does the marked area show?',
+ o:['Vertical (angular) infrabony defect','Horizontal bone loss','Grade III furcation involvement','Vertical root fracture'],a:0,
+ e:'The crest slopes obliquely down along one root surface, so bone loss is deeper next to the tooth than at the neighbouring tooth. This suggests an infrabony pocket; probing and surgical exploration show how many bony walls remain, which guides regenerative options.',
+ k:['Oblique crest next to one root','Deeper next to the affected tooth','Corresponds to an infrabony pocket']},
+{id:7,title:'Internal resorption',region:'Maxillary central incisor IOPA',note:'26-year-old; history of trauma to 11 eight years ago. Asymptomatic, found on routine radiograph.',
+ svg:(P,l)=>iopaSVG({crest:132,flip:true,seed:27,teeth:MAXANT({c1:{intRes:{y:186,rx:12,ry:17}}})},P,l),
+ hot:[{x:136,y:114,r:26}],
+ q:'What is the lesion in the root canal of 11?',
+ o:['Internal (inflammatory) root resorption','External cervical resorption','Horizontal root fracture','Large lateral canal'],a:0,
+ e:'A symmetrical, well-defined, oval "ballooning" of the canal, with the normal canal outline lost inside the lesion, is internal resorption. It stays centred on the canal with a change of horizontal angulation; external resorption moves relative to the canal and the canal outline can be traced through it.',
+ k:['Smooth oval enlargement of the canal','Canal outline lost within the lesion','Stays centred on the canal with angulation change']},
+{id:8,title:'Horizontal root fracture',region:'Maxillary central incisor IOPA',note:'16-year-old; hit on the face with a cricket ball yesterday. 21 slightly mobile and tender.',
+ svg:(P,l)=>iopaSVG({crest:132,flip:true,seed:31,teeth:MAXANT({c2:{fracture:{y:196}}})},P,l),
+ hot:[{x:232,y:104,r:28}],
+ q:'What is the finding in 21?',
+ o:['Horizontal root fracture in the middle third','Internal root resorption','Vertical root fracture','Root canal treated tooth'],a:0,
+ e:'A thin radiolucent line crossing the root horizontally is a horizontal (transverse) root fracture. Several angulations may be needed because the line is only seen when the beam passes along it. Reposition if displaced, splint flexibly for about 4 weeks, and monitor the pulp.',
+ k:['Thin radiolucent line across the root','Seen best when the beam is parallel to it','Middle-third fractures usually have a fair prognosis']},
+{id:9,title:'Subgingival calculus',region:'Mandibular anterior IOPA',note:'47-year-old; heavy deposits lingual to the lower incisors, bleeding on probing.',
+ svg:(P,l)=>iopaSVG({crest:142,softY:90,seed:35,teeth:[40,120,200,280,360].map(x=>({x,w:62,kind:'ant',top:34,cej:118,apex:270,mods:{calc:'lr'}}))},P,l),
+ hot:[{x:80,y:128,r:24},{x:160,y:128,r:24},{x:240,y:128,r:24},{x:320,y:128,r:24}],
+ q:'What are the small spur-like radiopacities on the root surfaces?',
+ o:['Subgingival calculus deposits','Cervical burnout','Enamel pearls','Overhanging restorations'],a:0,
+ e:'Irregular spur or ledge-shaped radiopacities projecting from the proximal root surfaces near the cervical area are calculus. Only heavily calcified deposits show up, so radiographs underestimate the true amount.',
+ k:['Spur-like projections from proximal root surfaces','Near the CEJ, often with crestal bone loss','Radiographs underestimate calculus']},
+{id:10,title:'Hypercementosis',region:'Mandibular left premolar IOPA',note:'60-year-old; routine radiograph before a bridge. 35 is vital and asymptomatic.',
+ svg:(P,l)=>iopaSVG({crest:126,seed:39,teeth:[{x:62,w:58,kind:'pm',top:44,cej:112,apex:266},{x:172,w:60,kind:'pm',top:42,cej:112,apex:266,mods:{hyper:true}},{x:292,w:94,kind:'molar',top:40,cej:112,apex:260,mods:{resto:true}},{x:402,w:90,kind:'molar',top:42,cej:112,apex:256}]},P,l),
+ hot:[{x:172,y:250,r:30}],
+ q:'What explains the shape of the root apex of 35?',
+ o:['Hypercementosis','Condensing osteitis','Cementoblastoma','Periapical cemento-osseous dysplasia'],a:0,
+ e:'A bulbous, club-shaped root that is still surrounded by a normal PDL space and lamina dura is hypercementosis. Causes include occlusal trauma, supra-eruption, Paget\'s disease and idiopathic. Cementoblastoma is fused to the root, has a radiolucent rim and often causes pain and expansion.',
+ k:['Bulbous enlargement of the root','PDL space and lamina dura preserved around it','Tooth vital; usually no treatment needed']}
+];
+
+/* ================================================================
+   CONTENT — PANORAMIC RADIOGRAPHS
+   ================================================================ */
+const PANO=[
+{id:1,title:'Mesioangular impacted third molar',region:'Mandibular left posterior',note:'24-year-old; recurrent pain in the left lower jaw for six months.',
+ svg:(P,l)=>panoSVG({skip:[38],seed:41,over:P2=>`<g transform="rotate(-48 628 266)">${tooth({x:628,w:32,kind:'molar',top:246,cej:270,apex:306,sw:0.5},P2)}</g>`},P,l),
+ hot:[{x:625,y:262,r:38}],
+ q:'How is the lower left third molar best classified?',
+ o:['Mesioangular impaction (Winter\'s classification)','Distoangular impaction','Horizontal impaction','Vertical, fully erupted'],a:0,
+ e:'The long axis is tilted forward towards the second molar, so the crown is impacted against its distal surface: mesioangular. Also assess depth and ramus relation (Pell & Gregory) and look for signs of a close relationship with the inferior alveolar canal (root darkening, interruption of the canal\'s white lines, canal diversion), which call for CBCT.',
+ k:['Crown tilted toward the second molar','Assess depth and ramus relation','Check relation to the inferior alveolar canal']},
+{id:2,title:'Dentigerous cyst',region:'Mandibular right posterior',note:'17-year-old; painless swelling of the right lower jaw; 48 clinically absent.',
+ svg:(P,l)=>panoSVG({skip:[48],seed:43,under:()=>`<ellipse cx="168" cy="276" rx="36" ry="30" fill="#2a2a2a" stroke="#949494" stroke-width="2.4"/>`,over:P2=>tooth({x:168,w:32,kind:'molar',top:262,cej:286,apex:322,sw:0.5},P2)},P,l),
+ hot:[{x:168,y:274,r:40}],
+ q:'What is the most likely diagnosis?',
+ o:['Dentigerous (follicular) cyst','Radicular cyst','Periapical cemento-osseous dysplasia','Stafne bone defect'],a:0,
+ e:'A well-defined, corticated, unilocular radiolucency surrounding the crown of an unerupted tooth and attached at the CEJ is a dentigerous cyst. A follicular space wider than about 3–5 mm suggests a cyst. Unicystic ameloblastoma and odontogenic keratocyst can look similar, so histopathology is essential.',
+ k:['Unilocular, corticated radiolucency','Surrounds the crown, attached at the CEJ','Associated with an unerupted tooth']},
+{id:3,title:'Fracture of the mandible',region:'Mandibular left parasymphysis',note:'28-year-old after a road traffic accident; deranged occlusion and a step in the lower left arch.',
+ svg:(P,l)=>panoSVG({seed:47,over:()=>`<path d="M474,256 L480,276 L471,296 L479,318 L469,342 L476,380" fill="none" stroke="#151515" stroke-width="4.5"/><path d="M478,256 L484,276 L475,296 L483,318 L473,342 L480,380" fill="none" stroke="#9a9a9a" stroke-width="1.2" opacity=".6"/>`},P,l),
+ hot:[{x:476,y:316,r:46}],
+ q:'What is the radiolucent line in the lower left canine–premolar region?',
+ o:['Fracture of the left parasymphysis of the mandible','Nutrient canal','Normal mental foramen','Airway shadow superimposition'],a:0,
+ e:'An irregular radiolucent line crossing the cortex to the lower border, with a step in the occlusion, is a fracture. Because the mandible is a ring, always look for a second fracture (often the opposite condyle or angle) and confirm with a second view such as a PA mandible or CBCT.',
+ k:['Irregular line through both cortices','Matches clinical step and deranged occlusion','Search for a second fracture']},
+{id:4,title:'Maxillary sinus opacification',region:'Left maxillary sinus',note:'40-year-old; heaviness over the left cheek, worse on bending forward, after a cold. Upper left molars tender.',
+ svg:(P,l)=>panoSVG({sinusOpaque:true,seed:51},P,l),
+ hot:[{x:545,y:134,r:62}],
+ q:'Comparing both sides, what do you see?',
+ o:['Opacification of the left maxillary sinus, consistent with sinusitis','Normal, well-pneumatised sinuses','Antral pseudocyst on the sinus floor','Ghost image of the opposite mandible'],a:0,
+ e:'The left sinus has lost its normal air radiolucency compared with the right. With the history, this suggests sinusitis. Look for an odontogenic cause (periapical lesions of upper molars, oroantral communication); CBCT or CT confirms. An antral pseudocyst is a dome-shaped opacity on the floor, not a uniform haze.',
+ k:['Always compare left and right sinuses','Loss of normal air radiolucency','Rule out an odontogenic source']},
+{id:5,title:'Mixed dentition',region:'Whole dentition',note:'Child referred for orthodontic screening. Normal growth and development.',
+ svg:(P,l)=>mixedPano(P,l),
+ hot:MIXED_HOT,
+ q:'Click any developing premolar. What does this radiograph show?',
+ o:['Mixed dentition: premolar crowns developing beneath primary molars (about 8–9 years)','Multiple supernumerary teeth (hyperdontia)','Multiple dentigerous cysts','Permanent dentition with impacted premolars'],a:0,
+ e:'Permanent incisors and first molars are erupted; primary canines and molars remain, with permanent canine and premolar crowns developing in thin follicles beneath them; second molars are developing and third molar crypts are forming. This pattern fits a child of about 8–9 years and is normal.',
+ k:['Primary molars with premolar crowns beneath','Thin, uniform follicular spaces are normal','Use developmental stages to estimate dental age']},
+{id:6,title:'Compound odontoma',region:'Anterior maxilla, right side',note:'13-year-old; upper right permanent canine has not erupted; primary canine retained.',
+ svg:(P,l)=>{const x=px(-1,3),yo=occ(x);return panoSVG({skip:[13],seed:55,
+  over:P2=>`${panoTooth({x,n:3,w:17},true,P2,{},{kind:'ant',w:17,ch:20,L:30})}
+<g transform="translate(${x-8} ${yo-82}) rotate(-12)"><ellipse cx="0" cy="0" rx="25" ry="20" fill="#2a2a2a" stroke="#999" stroke-width="2"/>
+<path d="M-14,-8 q4,-7 8,0 l-1,9 h-6z" fill="#efefef"/><path d="M-2,-10 q4,-7 8,0 l-1,10 h-6z" fill="#e6e6e6"/><path d="M9,-6 q4,-6 7,0 l-1,8 h-5z" fill="#ececec"/>
+<path d="M-11,4 q4,-6 7,0 l-1,8 h-5z" fill="#e2e2e2"/><path d="M1,3 q4,-6 7,0 l-1,9 h-5z" fill="#efefef"/></g>
+<g transform="rotate(-20 ${x-22} ${yo-128}) matrix(1 0 0 -1 0 ${2*(yo-128)})">${tooth({x:x-22,w:24,kind:'ant',top:yo-128+3,cej:yo-128+30,apex:yo-128+76,sw:0.5},P2)}</g>`},P,l);},
+ hot:[{x:px(-1,3)-8,y:occ(px(-1,3))-82,r:32}],
+ q:'What is the lesion above the retained primary canine?',
+ o:['Compound odontoma','Complex odontoma','Adenomatoid odontogenic tumour','Calcifying odontogenic cyst'],a:0,
+ e:'A cluster of small, tooth-like structures (denticles), each with enamel and dentine radiodensity, inside a radiolucent rim is a compound odontoma. It is most common in the anterior maxilla and often blocks eruption of a permanent tooth. A complex odontoma is an amorphous radiopaque mass, more often in the posterior mandible.',
+ k:['Multiple tooth-like denticles','Surrounded by a thin radiolucent rim','Often blocks eruption of the permanent canine']},
+{id:7,title:'Multilocular radiolucency',region:'Mandibular right body and angle',note:'35-year-old; slow, painless expansion of the right posterior mandible over two years.',
+ svg:(P,l)=>panoSVG({skip:[48],seed:59,mods:{46:{shortRoot:16},47:{shortRoot:20}},
+  under:()=>`<g fill="#2b2b2b" stroke="#959595" stroke-width="2"><circle cx="150" cy="282" r="26"/><circle cx="182" cy="296" r="30"/><circle cx="214" cy="304" r="24"/><circle cx="158" cy="250" r="20"/><circle cx="242" cy="300" r="18"/><circle cx="190" cy="268" r="18"/></g>`},P,l),
+ hot:[{x:190,y:285,r:54}],
+ q:'Which diagnosis is most likely for this lesion?',
+ o:['Ameloblastoma','Odontogenic keratocyst','Central giant cell granuloma','Simple (traumatic) bone cyst'],a:0,
+ e:'A multilocular "soap-bubble" radiolucency with curved septa in the posterior mandible of an adult, with expansion and knife-edge resorption of adjacent roots, is typical of ameloblastoma. OKC tends to grow along the bone with less expansion. Biopsy is mandatory before treatment.',
+ k:['Multilocular, soap-bubble appearance','Posterior mandible, painless expansion','Knife-edge root resorption']},
+{id:8,title:'Radicular cyst',region:'Mandibular left molar',note:'45-year-old; grossly decayed 36, non-vital, painless.',
+ svg:(P,l)=>panoSVG({seed:63,mods:{36:{occCaries:true}},under:()=>`<ellipse cx="548" cy="312" rx="32" ry="27" fill="#2a2a2a" stroke="#999" stroke-width="2.2"/>`},P,l),
+ hot:[{x:548,y:308,r:40}],
+ q:'What is the most likely diagnosis?',
+ o:['Radicular (periapical) cyst','Dentigerous cyst','Stafne bone cavity','Simple (traumatic) bone cyst'],a:0,
+ e:'A round, well-defined, corticated radiolucency at the apex of a non-vital tooth, continuous with its PDL space, is a radicular cyst. A Stafne defect lies below the inferior alveolar canal near the angle and is unrelated to the teeth. Treat the cause (root canal treatment or extraction) and enucleate if it persists.',
+ k:['Centred on the apex of a non-vital tooth','Well-defined, corticated outline','Lamina dura lost at the apex']},
+{id:9,title:'Mesiodens',region:'Anterior maxilla, midline',note:'15-year-old; midline diastema between the upper central incisors.',
+ svg:(P,l)=>panoSVG({seed:67,opt:{11:{dx:-3},21:{dx:3}},over:P2=>tooth({x:400,w:12,kind:'ant',top:150,cej:164,apex:192,sw:0.5},P2)},P,l),
+ hot:[{x:400,y:168,r:24}],
+ q:'What is the small structure between the roots of the central incisors?',
+ o:['Mesiodens (inverted supernumerary tooth)','Nasopalatine duct cyst','Compound odontoma','Retained primary central incisor'],a:0,
+ e:'A small conical tooth in the midline between the central incisor roots, here inverted with its crown pointing toward the nasal floor, is a mesiodens. It can cause a diastema, delayed eruption or displacement. Localise it with the parallax technique or CBCT before surgery.',
+ k:['Midline, between central incisor roots','Conical shape, often inverted','Localise with parallax or CBCT']},
+{id:10,title:'Elongated styloid process',region:'Both sides, behind the ramus',note:'52-year-old; dull throat pain and pain on swallowing and turning the head. Tonsillectomy years ago.',
+ svg:(P,l)=>panoSVG({seed:71,over:()=>`<path d="M76,112 L84,110 L122,262 L118,264 Z" fill="#cdcdcd"/><path d="M724,112 L716,110 L678,262 L682,264 Z" fill="#cdcdcd"/>`},P,l),
+ hot:[{x:100,y:188,r:42},{x:700,y:188,r:42}],
+ q:'What are the long tapering radiopacities behind the rami?',
+ o:['Elongated or mineralised styloid processes (Eagle syndrome if symptomatic)','Calcified carotid artery atheroma','Ghost image of the hyoid bone','Submandibular salivary calculi'],a:0,
+ e:'Thin, tapering radiopacities running from behind the ramus toward the angle are elongated styloid processes or a mineralised stylohyoid ligament (normally about 2.5 cm; over 3 cm is elongated). With throat pain on swallowing or head turning this is Eagle syndrome. Carotid calcifications are nodular and lie below the angle near C3–C4.',
+ k:['Thin, tapering radiopacity behind the ramus','Often bilateral','Symptoms + elongation = Eagle syndrome']}
+];
+
+const MODS={
+ case:{key:'case',route:'cases',label:'Case studies',short:'Cases',items:CASES,max:3},
+ radio:{key:'radio',route:'radio',label:'Intraoral radiographs',short:'IOPA',items:RADIO,max:2},
+ pano:{key:'pano',route:'pano',label:'Panoramic radiographs',short:'Pano',items:PANO,max:2}};
+
+/* ================================================================
+   UTILITIES
+   ================================================================ */
+const $=(s,r=document)=>r.querySelector(s);
+function h(tag,attrs,...kids){
+ const el=document.createElement(tag);
+ if(attrs) for(const [k,v] of Object.entries(attrs)){
+  if(v==null||v===false) continue;
+  if(k==='class') el.className=v;
+  else if(k.startsWith('on')&&typeof v==='function') el.addEventListener(k.slice(2),v);
+  else el.setAttribute(k,v===true?'':String(v));
+ }
+ for(const k of kids.flat(Infinity)){ if(k==null||k===false) continue; el.append(k instanceof Node?k:document.createTextNode(String(k))); }
+ return el;
+}
+/* Trusted, app-generated SVG markup only (never user input). */
+function svgNode(markup){ const d=h('div',{class:'thumb'}); d.innerHTML=markup; return d; }
+function toast(msg,kind){ const t=h('div',{class:'toast '+(kind||'')},msg); $('#toasts').append(t); setTimeout(()=>t.remove(),4200); }
+function fmtDate(ts){ if(!ts) return '—'; const d=new Date(ts); return d.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}); }
+function fmtDT(ts){ if(!ts) return '—'; const d=new Date(ts); return d.toLocaleString(undefined,{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}); }
+function fmtSecs(s){ if(!s&&s!==0) return '—'; s=Math.round(s); return s<60?s+'s':Math.floor(s/60)+'m '+(s%60)+'s'; }
+const pct=v=>Math.round(v*100);
+function shuffled(n){ const a=[...Array(n).keys()], r=new Uint32Array(n); crypto.getRandomValues(r); for(let i=n-1;i>0;i--){const j=r[i]%(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+/* ---------- crypto ---------- */
+function b64e(buf){ let s=''; for(const x of new Uint8Array(buf)) s+=String.fromCharCode(x); return btoa(s); }
+function b64d(s){ const bin=atob(s), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return u; }
+function randB64(n){ const u=new Uint8Array(n); crypto.getRandomValues(u); return b64e(u); }
+async function pbkdf(pw,salt){
+ const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
+ return b64e(await crypto.subtle.deriveBits({name:'PBKDF2',salt:b64d(salt),iterations:ITER,hash:'SHA-256'},k,256));
+}
+function ctEq(a,b){ if(typeof a!=='string'||typeof b!=='string') return false; let r=a.length^b.length; const n=Math.max(a.length,b.length); for(let i=0;i<n;i++) r|=(a.charCodeAt(i)||0)^(b.charCodeAt(i)||0); return r===0; }
+
+/* ---------- validation ---------- */
+const RX={user:/^[a-z0-9_]{3,20}$/, name:/^[A-Za-z][A-Za-z .'-]{1,39}$/};
+function pwChecks(pw,un){
+ return [
+  ['8–64 characters',pw.length>=8&&pw.length<=64],
+  ['Uppercase letter',/[A-Z]/.test(pw)],
+  ['Lowercase letter',/[a-z]/.test(pw)],
+  ['Number',/[0-9]/.test(pw)],
+  ['Symbol (e.g. @ # !)',/[^A-Za-z0-9]/.test(pw)],
+  ['Not common / no username',!!pw&&!COMMON.includes(pw.toLowerCase())&&!(un&&un.length>=3&&pw.toLowerCase().includes(un))]];
+}
+const pwOk=(pw,un)=>pwChecks(pw,un).every(c=>c[1]);
+
+/* ================================================================
+   STORAGE
+   ================================================================ */
+/* Safe storage: falls back to memory when the browser blocks storage
+   (e.g. sandboxed previews, some in-app file viewers, private modes). */
+function safeStore(kind){
+ const mem={}; let real=null;
+ try{ const s=window[kind]; const t='__drts_t'; s.setItem(t,'1'); s.removeItem(t); real=s; }catch(e){ real=null; }
+ return {persistent:!!real,
+  getItem:k=>{ try{ if(real) return real.getItem(k); }catch(e){} return Object.prototype.hasOwnProperty.call(mem,k)?mem[k]:null; },
+  setItem:(k,v)=>{ if(real){ real.setItem(k,v); return; } mem[k]=String(v); },
+  removeItem:k=>{ try{ if(real) real.removeItem(k); }catch(e){} delete mem[k]; }};
+}
+const LS=safeStore('localStorage'), SS=safeStore('sessionStorage');
+let DB=null, flash=null;
+const freshDB=()=>({v:1,users:{},attempts:[],logins:[],created:Date.now()});
+function loadDB(){
+ let d=null; try{ d=JSON.parse(LS.getItem(KEY)||'null'); }catch(e){ d=null; }
+ if(!d||typeof d!=='object'||!d.users||typeof d.users!=='object'||!Array.isArray(d.attempts)||!Array.isArray(d.logins)) d=freshDB();
+ DB=d;
+}
+function saveDB(){ try{ LS.setItem(KEY,JSON.stringify(DB)); return true; }catch(e){ toast('Could not save: browser storage is full or blocked.','bad'); return false; } }
+const getUser=id=> (typeof id==='string'&&Object.prototype.hasOwnProperty.call(DB.users,id))?DB.users[id]:null;
+function logLogin(u,ok,r){ DB.logins.push({u,ok,r,ts:Date.now()}); if(DB.logins.length>600) DB.logins.splice(0,DB.logins.length-600); }
+async function ensureAdmin(){
+ if(!getUser(DEFAULT_ADMIN.u)){
+  const salt=randB64(16);
+  DB.users[DEFAULT_ADMIN.u]={name:'Administrator',role:'admin',salt,hash:await pbkdf(DEFAULT_ADMIN.pw,salt),created:Date.now(),mustChange:true,failed:0,lockUntil:0,lastLogin:0};
+  saveDB();
+ }
+}
+
+/* ---------- session ---------- */
+function readSess(){ try{ return JSON.parse(SS.getItem(SKEY)||'null'); }catch(e){ return null; } }
+function getSession(){
+ const s=readSess(); if(!s||typeof s.u!=='string') return null;
+ if(Date.now()>s.exp){ endSession('expired'); return null; }
+ const u=getUser(s.u); if(!u||!u.tok||!ctEq(u.tok,s.tok)){ SS.removeItem(SKEY); return null; }
+ return {id:s.u,u};
+}
+function startSession(id){ const u=getUser(id); u.tok=randB64(24); saveDB(); SS.setItem(SKEY,JSON.stringify({u:id,tok:u.tok,exp:Date.now()+IDLE_MS})); }
+let lastTouch=0;
+function touch(){ const now=Date.now(); if(now-lastTouch<10000) return; lastTouch=now; const s=readSess(); if(s&&now<s.exp){ s.exp=now+IDLE_MS; SS.setItem(SKEY,JSON.stringify(s)); } }
+function endSession(reason){
+ const s=readSess();
+ if(s){ const u=getUser(s.u); if(u&&u.tok&&u.tok===s.tok){ delete u.tok; saveDB(); } }
+ SS.removeItem(SKEY);
+ if(reason==='expired') flash={kind:'warn',msg:'Your session ended after 20 minutes of inactivity. Please sign in again.'};
+ if(reason==='logout') flash={kind:'good',msg:'You have been signed out.'};
+}
+
+/* ---------- auth actions ---------- */
+async function doLogin(un,pw){
+ un=String(un||'').trim().toLowerCase(); pw=String(pw||'');
+ if(!un||!pw) return {err:'Enter your username and password.'};
+ const okFmt=RX.user.test(un), u=okFmt?getUser(un):null, now=Date.now();
+ if(u&&u.lockUntil>now){ logLogin(un,false,'locked'); saveDB(); return {err:`Too many failed attempts. This account is locked for ${Math.ceil((u.lockUntil-now)/60000)} more minute(s).`}; }
+ const hash=await pbkdf(pw.slice(0,64),u&&u.salt?u.salt:DUMMY_SALT);
+ if(!u||!u.hash||!ctEq(hash,u.hash)){
+  if(u){ u.failed=(u.failed||0)+1; if(u.failed>=LOCK_AFTER){ u.lockUntil=now+LOCK_MS; u.failed=0; logLogin(un,false,'locked after 5 failures'); } else logLogin(un,false,'wrong password'); }
+  else logLogin(okFmt?un:'(invalid input)',false,'unknown user');
+  saveDB(); return {err:'Invalid username or password.'};
+ }
+ u.failed=0; u.lockUntil=0; u.lastLogin=now; logLogin(un,true,'success'); startSession(un);
+ return {user:u};
+}
+async function doSignup(d){
+ const name=String(d.name||'').trim().replace(/\s+/g,' '), un=String(d.username||'').trim().toLowerCase(), errs=[];
+ if(!RX.name.test(name)) errs.push('Full name: 2–40 letters; spaces, full stops, apostrophes and hyphens allowed.');
+ if(!RX.user.test(un)) errs.push('Username: 3–20 characters using lowercase letters, numbers or underscore.');
+ else if(RESERVED.includes(un)||un.startsWith('__')) errs.push('That username is reserved. Please choose another.');
+ else if(getUser(un)) errs.push('That username is not available.');
+ if(!COHORTS.includes(d.cohort)) errs.push('Choose your year of study.');
+ if(!pwOk(d.pw||'',un)) errs.push('Password does not meet all the rules shown.');
+ if(d.pw!==d.pw2) errs.push('Passwords do not match.');
+ if(!d.agree) errs.push('Please accept the note on how your learning data is used.');
+ if(d.hp) errs.push('Unable to create account.');
+ if(errs.length) return {errs};
+ const salt=randB64(16);
+ DB.users[un]={name,role:'student',cohort:d.cohort,salt,hash:await pbkdf(d.pw,salt),created:Date.now(),failed:0,lockUntil:0,lastLogin:0};
+ saveDB(); return {ok:true};
+}
+
+/* ---------- stats ---------- */
+function record(sess,m,i,s,x,secs,extra){
+ if(sess.u.role!=='student') return; // admin previews are not counted
+ DB.attempts.push(Object.assign({u:sess.id,m,i,s,x,t:Math.min(3600,Math.round(secs)),ts:Date.now()},extra||{}));
+ saveDB();
+}
+function summary(id){
+ const at=DB.attempts.filter(a=>a.u===id), by={case:{},radio:{},pano:{}};
+ for(const a of at){ const b=by[a.m]; if(!b) continue; const p=a.x?a.s/a.x:0, c=b[a.i]; b[a.i]={best:Math.max(c?c.best:0,p),last:p,n:(c?c.n:0)+1,ts:a.ts}; }
+ const mods={}; for(const k of Object.keys(MODS)){ const items=Object.values(by[k]); mods[k]={done:items.length,best:items.length?items.reduce((s,v)=>s+v.best,0)/items.length:0}; }
+ const avg=at.length?at.reduce((s,a)=>s+(a.x?a.s/a.x:0),0)/at.length:0;
+ return {at,by,mods,avg,last:at.length?Math.max(...at.map(a=>a.ts)):0};
+}
+const students=()=>Object.keys(DB.users).filter(k=>DB.users[k].role==='student');
+
+/* ================================================================
+   SHELL
+   ================================================================ */
+const LOGO=`<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#0d6b66"/><path d="M12 11c3-2 5 0 8 0s5-2 8 0c3 2 2 7 1 10-1 4-1 9-3 9-2 0-2-6-4-6h-4c-2 0-2 6-4 6-2 0-2-5-3-9-1-3-2-8 1-10z" fill="#f5f3ee"/></svg>`;
+function renderBar(sess,route){
+ const bar=$('#bar'); bar.replaceChildren();
+ const brand=h('a',{class:'brand',href:sess?'#/home':'#/login'}); brand.innerHTML=LOGO; brand.append('DrTS Dental Case Lab');
+ const inner=h('div',{class:'bar-in'},brand);
+ if(sess){
+  const links=[['home','Dashboard'],['cases','Case studies'],['radio','IOPA'],['pano','Panoramic'],['progress','My progress']];
+  if(sess.u.role==='admin') links.unshift(['admin','Admin']);
+  const map={case:'cases'}; const cur=map[route]||route;
+  inner.append(h('nav',{class:'main','aria-label':'Main'},links.filter(l=>!(sess.u.role==='admin'&&l[0]==='progress')).map(([r,t])=>h('a',{href:'#/'+r,class:cur===r?'on':null},t))));
+  inner.append(h('div',{class:'who'},h('span',null,'Signed in as ',h('b',null,sess.u.name)),
+   h('a',{href:'#/account',class:'btn ghost sm'},'Account'),
+   h('button',{class:'btn ghost sm',type:'button',onclick:()=>{endSession('logout');go('#/login');}},'Sign out')));
+ }
+ bar.append(inner);
+}
+function show(node,sess,route){ renderBar(sess,route); const app=$('#app'); app.replaceChildren(node); window.scrollTo(0,0); }
+function go(hash){ if(location.hash===hash) render(); else location.hash=hash; }
+function flashNode(){ if(!flash) return null; const n=h('div',{class:'alert '+flash.kind},flash.msg); flash=null; return n; }
+function pageHead(eyebrow,title,sub,right){ return h('div',{class:'page-head'},h('div',null,h('div',{class:'eyebrow'},eyebrow),h('h1',null,title),sub?h('p',null,sub):null),h('div',{class:'spacer'}),right||null); }
+function bar(p){ return h('div',{class:'track'},h('div',{class:'fill',style:`width:${Math.max(0,Math.min(100,p))}%`})); }
+
+/* ================================================================
+   VIEWS — AUTH
+   ================================================================ */
+function hero(sub){ const d=h('div',{class:'hero'}); d.innerHTML=LOGO; d.append(h('h1',null,'DrTS Dental Case Lab'),h('p',null,sub)); return d; }
+function viewLogin(){
+ const err=h('div',{class:'alert bad',role:'alert'}); err.hidden=true;
+ const f=h('form',{class:'card',novalidate:true},
+  h('h2',null,'Sign in'), flashNode(), err,
+  h('label',{for:'li-u'},'Username'), h('input',{id:'li-u',name:'username',autocomplete:'username',maxlength:20,autocapitalize:'none',spellcheck:'false',required:true}),
+  h('label',{for:'li-p'},'Password'), h('input',{id:'li-p',name:'password',type:'password',autocomplete:'current-password',maxlength:64,required:true}),
+  h('button',{class:'btn block',type:'submit'},'Sign in'),
+  h('p',{class:'muted small center',style:'margin-top:14px'},'New student? ',h('a',{href:'#/signup'},'Create an account')));
+ f.addEventListener('submit',async e=>{
+  e.preventDefault(); const btn=f.querySelector('button[type=submit]'); btn.disabled=true; btn.textContent='Checking…'; err.hidden=true;
+  let r; try{ r=await doLogin(f.elements.username.value,f.elements.password.value); }catch(ex){ r={err:'Sign-in could not complete in this window ('+((ex&&ex.name)||'error')+'). Open the file directly in Chrome, Edge, Firefox or Safari.'}; }
+  btn.disabled=false; btn.textContent='Sign in';
+  if(r.err){ err.textContent=r.err; err.hidden=false; f.elements.password.value=''; f.elements.password.focus(); return; }
+  go(r.user.mustChange?'#/account':(r.user.role==='admin'?'#/admin':'#/home'));
+ });
+ setTimeout(()=>f.elements.username.focus(),0);
+ return h('div',{class:'auth'},hero('Case-based learning and radiographic interpretation for dental students.'),f);
+}
+function rulesList(pwInput,unGetter){
+ const ul=h('ul',{class:'rules'});
+ const upd=()=>{ ul.replaceChildren(...pwChecks(pwInput.value,unGetter()).map(([t,ok])=>h('li',{class:ok?'ok':null},t))); };
+ pwInput.addEventListener('input',upd); upd(); return {ul,upd};
+}
+function viewSignup(){
+ const err=h('div',{class:'alert bad',role:'alert'}); err.hidden=true;
+ const pw=h('input',{id:'su-p',name:'pw',type:'password',autocomplete:'new-password',maxlength:64,required:true});
+ const un=h('input',{id:'su-u',name:'username',autocomplete:'username',maxlength:20,autocapitalize:'none',spellcheck:'false',required:true});
+ const rl=rulesList(pw,()=>un.value.trim().toLowerCase()); un.addEventListener('input',rl.upd);
+ const f=h('form',{class:'card',novalidate:true},
+  h('h2',null,'Create a student account'), err,
+  h('label',{for:'su-n'},'Full name'), h('input',{id:'su-n',name:'name',autocomplete:'name',maxlength:40,required:true}),
+  h('label',{for:'su-u'},'Username'), un, h('div',{class:'muted small'},'3–20 characters: lowercase letters, numbers, underscore.'),
+  h('label',{for:'su-c'},'Year of study'), h('select',{id:'su-c',name:'cohort',required:true},h('option',{value:''},'Select…'),COHORTS.map(c=>h('option',{value:c},c))),
+  h('label',{for:'su-p'},'Password'), pw, rl.ul,
+  h('label',{for:'su-p2'},'Confirm password'), h('input',{id:'su-p2',name:'pw2',type:'password',autocomplete:'new-password',maxlength:64,required:true}),
+  h('div',{class:'hp','aria-hidden':'true'},h('label',{for:'su-w'},'Website'),h('input',{id:'su-w',name:'website',tabindex:'-1',autocomplete:'off'})),
+  h('label',{class:'check'},h('input',{type:'checkbox',name:'agree'}),h('span',null,'I understand my quiz scores, time spent and sign-in times are recorded and visible to the course administrator.')),
+  h('button',{class:'btn block',type:'submit'},'Create account'),
+  h('p',{class:'muted small center',style:'margin-top:14px'},'Already registered? ',h('a',{href:'#/login'},'Sign in')));
+ f.addEventListener('submit',async e=>{
+  e.preventDefault(); const btn=f.querySelector('button[type=submit]'); btn.disabled=true; err.hidden=true;
+  const el=f.elements;
+  const r=await doSignup({name:el.name.value,username:el.username.value,cohort:el.cohort.value,pw:el.pw.value,pw2:el.pw2.value,agree:el.agree.checked,hp:el.website.value});
+  btn.disabled=false;
+  if(r.errs){ err.replaceChildren(h('strong',null,'Please fix the following:'),h('ul',null,r.errs.map(x=>h('li',null,x)))); err.hidden=false; el.pw.value='';el.pw2.value=''; rl.upd(); window.scrollTo(0,0); return; }
+  flash={kind:'good',msg:'Account created. Please sign in.'}; go('#/login');
+ });
+ return h('div',{class:'auth'},hero('Register to track your learning progress.'),f);
+}
+function viewAccount(sess){
+ const u=sess.u, err=h('div',{class:'alert bad',role:'alert'}); err.hidden=true;
+ const pw=h('input',{id:'ac-n',name:'npw',type:'password',autocomplete:'new-password',maxlength:64});
+ const rl=rulesList(pw,()=>sess.id);
+ const f=h('form',{class:'card',novalidate:true},
+  h('h2',null,'Change password'),
+  u.mustChange?h('div',{class:'alert warn'},'You are using the default administrator password. Set a new password to continue.'):null, err,
+  h('label',{for:'ac-o'},'Current password'), h('input',{id:'ac-o',name:'opw',type:'password',autocomplete:'current-password',maxlength:64}),
+  h('label',{for:'ac-n'},'New password'), pw, rl.ul,
+  h('label',{for:'ac-n2'},'Confirm new password'), h('input',{id:'ac-n2',name:'npw2',type:'password',autocomplete:'new-password',maxlength:64}),
+  h('button',{class:'btn block',type:'submit'},'Update password'));
+ f.addEventListener('submit',async e=>{
+  e.preventDefault(); err.hidden=true; const el=f.elements, btn=f.querySelector('button[type=submit]'); btn.disabled=true;
+  const fail=m=>{ err.textContent=m; err.hidden=false; btn.disabled=false; };
+  const cur=await pbkdf(el.opw.value.slice(0,64),u.salt);
+  if(!ctEq(cur,u.hash)) return fail('Current password is incorrect.');
+  if(!pwOk(el.npw.value,sess.id)) return fail('New password does not meet all the rules.');
+  if(el.npw.value!==el.npw2.value) return fail('New passwords do not match.');
+  if(el.npw.value===el.opw.value||el.npw.value===DEFAULT_ADMIN.pw) return fail('Choose a password different from the current or default one.');
+  u.salt=randB64(16); u.hash=await pbkdf(el.npw.value,u.salt); const was=u.mustChange; u.mustChange=false; u.pwChanged=Date.now();
+  startSession(sess.id); // rotate session token
+  toast('Password updated.','good'); go(was?'#/admin':'#/account');
+ });
+ const info=h('div',{class:'card'},h('h2',null,'Profile'),h('div',{class:'sheet'},h('dl',null,
+  h('dt',null,'Name'),h('dd',null,u.name), h('dt',null,'Username'),h('dd',null,sess.id), h('dt',null,'Role'),h('dd',null,u.role==='admin'?'Administrator':'Student'),
+  u.cohort?[h('dt',null,'Year of study'),h('dd',null,u.cohort)]:null, h('dt',null,'Joined'),h('dd',null,fmtDate(u.created)), h('dt',null,'Password changed'),h('dd',null,fmtDate(u.pwChanged)))));
+ return h('div',null,pageHead('Account','Your account'),h('div',{class:'split'},f,info));
+}
+
+/* ================================================================
+   VIEWS — LEARNING
+   ================================================================ */
+function nextItem(mod,by){ const it=MODS[mod].items.find(x=>!by[mod][x.id]); return it?it.id:null; }
+function viewHome(sess){
+ const S=summary(sess.id);
+ const cards=Object.values(MODS).map(M=>{
+  const d=S.mods[M.key], nx=nextItem(M.key,S.by);
+  return h('div',{class:'card mod'},
+   h('div',{class:'eyebrow'},M.short),h('h2',null,M.label),
+   h('div',{class:'row'},h('span',{class:'num'},d.done),h('span',{class:'muted'},'of '+M.items.length+' completed')),
+   bar(d.done/M.items.length*100),
+   h('div',{class:'muted small'},d.done?'Average best score: '+pct(d.best)+'%':'Not started yet'),
+   h('div',{class:'row'},h('a',{class:'btn',href:nx?`#/${M.route}/${nx}`:`#/${M.route}`},nx?(d.done?'Continue':'Start'):'Review'),h('a',{class:'btn ghost',href:'#/'+M.route},'View all')));
+ });
+ const recent=S.at.slice(-5).reverse();
+ return h('div',{class:'stack'},
+  pageHead('Dashboard','Welcome, '+sess.u.name.split(' ')[0],sess.u.role==='admin'?'Admin preview: your answers here are not counted in statistics.':'Work through clinical cases, then train your eye on intraoral and panoramic radiographs.'),
+  h('div',{class:'grid wide'},cards),
+  h('div',{class:'card'},h('h2',null,'Recent activity'),recent.length?h('div',{class:'tablewrap'},attemptTable(recent,false)):h('p',{class:'muted'},'No attempts yet. Pick a module above to begin.')));
+}
+function attemptTable(list,withUser){
+ return h('table',{class:'tbl'},h('thead',null,h('tr',null,withUser?h('th',null,'Student'):null,h('th',null,'Module'),h('th',null,'Item'),h('th',null,'Score'),h('th',null,'Time'),h('th',null,'When'))),
+  h('tbody',null,list.map(a=>{const M=MODS[a.m]; const it=M&&M.items.find(x=>x.id===a.i); const u=getUser(a.u);
+   return h('tr',null,withUser?h('td',null,u?u.name:a.u):null,h('td',null,M?M.short:a.m),h('td',null,it?`#${it.id} ${it.title}`:'#'+a.i),h('td',{class:'n'},`${a.s}/${a.x}`),h('td',{class:'n'},fmtSecs(a.t)),h('td',null,fmtDT(a.ts)));})));
+}
+function statusTag(rec){ if(!rec) return h('span',{class:'tag none'},'Not started'); const p=pct(rec.best); return h('span',{class:'tag '+(p===100?'done':p>=50?'part':'bad')},'Best '+p+'%'); }
+function viewList(modKey,sess){
+ const M=MODS[modKey], S=summary(sess.id), by=S.by[modKey];
+ const sub={case:'Ten clinical scenarios. Read the case sheet and answer three questions on diagnosis and management.',radio:'Ten intraoral radiographs. First click the abnormality, then choose the interpretation.',pano:'Ten panoramic radiographs. Locate the finding on the image, then interpret it.'}[modKey];
+ const items=M.items.map(it=>{
+  const rec=by[it.id];
+  if(modKey==='case') return h('a',{class:'card item',href:`#/case/${it.id}`},h('div',{class:'row'},h('span',{class:'tag'},it.tag),h('span',{class:'spacer'}),statusTag(rec)),h('h3',null,`${it.id}. ${it.title}`),h('div',{class:'muted small'},it.patient),h('div',{class:'small'},it.complaint));
+  const P=uid();
+  return h('a',{class:'card item',href:`#/${M.route}/${it.id}`},svgNode(it.svg(P,'Radiograph '+it.id)),h('div',{class:'row'},h('strong',null,(M.key==='radio'?'IOPA ':'Pano ')+String(it.id).padStart(2,'0')),h('span',{class:'spacer'}),statusTag(rec)),h('div',{class:'muted small'},rec?it.title:it.region));
+ });
+ return h('div',null,pageHead(M.short,M.label,sub,h('div',{class:'muted'},`${Object.keys(by).length}/${M.items.length} completed`)),h('div',{class:'grid'},items));
+}
+
+/* ---------- case player ---------- */
+function viewCase(id,sess){
+ const c=CASES.find(x=>x.id===id), st={qi:0,score:0,res:[],start:Date.now(),answered:false,orders:c.qs.map(q=>shuffled(q.o.length))};
+ const sheet=h('div',{class:'card sheet'},
+  h('div',{class:'row'},h('span',{class:'tag'},c.tag),h('span',{class:'spacer'}),h('span',{class:'muted small'},`Case ${c.id} of ${CASES.length}`)),
+  h('h2',{style:'margin-top:8px'},c.title),
+  h('dl',null,h('dt',null,'Patient'),h('dd',null,c.patient),h('dt',null,'Chief complaint'),h('dd',null,c.complaint),
+   h('dt',null,'History'),h('dd',null,h('ul',null,c.history.map(x=>h('li',null,x)))),
+   h('dt',null,'Examination'),h('dd',null,h('ul',null,c.exam.map(x=>h('li',null,x)))),
+   h('dt',null,'Investigations'),h('dd',null,c.inv)));
+ const panel=h('div',{class:'card'});
+ function draw(){
+  panel.replaceChildren();
+  const dots=h('div',{class:'dots'},c.qs.map((_,i)=>h('span',{class:i<st.res.length?(st.res[i]?'ok':'no'):(i===st.qi?'cur':'')})));
+  if(st.qi>=c.qs.length){
+   const secs=(Date.now()-st.start)/1000;
+   if(!st.saved){ record(sess,'case',c.id,st.score,c.qs.length,secs); st.saved=true; }
+   const nx=CASES.find(x=>x.id===c.id+1);
+   panel.append(dots,h('div',{class:'eyebrow'},'Case complete'),h('div',{class:'score-big'},`${st.score}/${c.qs.length}`),
+    h('p',{class:'muted'},'Time taken: '+fmtSecs(secs)),h('div',{class:'feedback'},h('strong',null,'Key take-away: '),c.take),
+    h('div',{class:'row',style:'margin-top:16px'},h('button',{class:'btn ghost',type:'button',onclick:()=>render()},'Try again'),nx?h('a',{class:'btn',href:'#/case/'+nx.id},'Next case →'):h('a',{class:'btn',href:'#/cases'},'Back to all cases')));
+   return;
+  }
+  const q=c.qs[st.qi], order=st.orders[st.qi], fb=h('div');
+  const opts=order.map(oi=>h('button',{class:'opt',type:'button',onclick:ev=>{
+   if(st.answered) return; st.answered=true; const ok=oi===q.a; if(ok) st.score++; st.res.push(ok);
+   panel.querySelectorAll('.opt').forEach(b=>{b.disabled=true; if(+b.dataset.i===q.a) b.classList.add('correct');});
+   if(!ok) ev.currentTarget.classList.add('wrong');
+   fb.append(h('div',{class:'feedback'},h('strong',null,ok?'Correct. ':'Not quite. '),q.e),
+    h('div',{class:'row',style:'margin-top:14px'},h('button',{class:'btn',type:'button',onclick:()=>{st.qi++;st.answered=false;draw();}},st.qi+1<c.qs.length?'Next question →':'See result')));
+   dots.children[st.qi].className=ok?'ok':'no';
+  },'data-i':oi},q.o[oi]));
+  panel.append(dots,h('div',{class:'eyebrow'},`Question ${st.qi+1} of ${c.qs.length}`),h('h3',null,q.q),...opts,fb);
+ }
+ draw();
+ return h('div',null,h('p',null,h('a',{href:'#/cases'},'← All cases')),h('div',{class:'split'},sheet,panel));
+}
+
+/* ---------- radiograph player ---------- */
+function viewImage(modKey,id,sess){
+ const M=MODS[modKey], it=M.items.find(x=>x.id===id), P=uid();
+ const st={step:'locate',hit:null,start:Date.now(),order:shuffled(it.o.length),dx:null};
+ const view=h('div',{class:'viewer locate'}); view.innerHTML=it.svg(P,(modKey==='radio'?'Intraoral':'Panoramic')+' radiograph '+id);
+ const svg=view.querySelector('svg'), mk=svg.querySelector('.mk');
+ const ctl={b:100,c:100,inv:false};
+ const applyF=()=>{ svg.style.filter=`brightness(${ctl.b/100}) contrast(${ctl.c/100})${ctl.inv?' invert(1)':''}`; };
+ const rng=(lbl,k)=>{const i=h('input',{type:'range',min:50,max:170,value:100,'aria-label':lbl}); i.addEventListener('input',()=>{ctl[k]=+i.value;applyF();}); return h('label',null,lbl,i);};
+ const inv=h('input',{type:'checkbox'}); inv.addEventListener('change',()=>{ctl.inv=inv.checked;applyF();});
+ const controls=h('div',{class:'vctl'},rng('Brightness','b'),rng('Contrast','c'),h('label',null,inv,'Invert'),
+  h('button',{type:'button',onclick:()=>{ctl.b=100;ctl.c=100;ctl.inv=false;inv.checked=false;controls.querySelectorAll('input[type=range]').forEach(r=>r.value=100);applyF();}},'Reset'));
+ view.append(controls);
+ const NS='http://www.w3.org/2000/svg';
+ const mark=(tag,a)=>{const e=document.createElementNS(NS,tag); for(const k in a) e.setAttribute(k,a[k]); mk.append(e); return e;};
+ const scale=modKey==='pano'?1.6:1;
+ function revealTargets(){ for(const t of it.hot) mark('circle',{cx:t.x,cy:t.y,r:t.r,fill:'none',stroke:'#3fe0a5','stroke-width':2.5*scale,'stroke-dasharray':`${6*scale} ${4*scale}`}); }
+ svg.addEventListener('click',ev=>{
+  if(st.step!=='locate') return;
+  const ctm=svg.getScreenCTM(); if(!ctm) return;
+  const pt=new DOMPoint(ev.clientX,ev.clientY).matrixTransform(ctm.inverse());
+  st.hit=it.hot.some(t=>Math.hypot(pt.x-t.x,pt.y-t.y)<=t.r);
+  mark('circle',{cx:pt.x,cy:pt.y,r:7*scale,fill:'none',stroke:st.hit?'#3fe0a5':'#ff8a3d','stroke-width':2.5*scale});
+  mark('path',{d:`M${pt.x-12*scale},${pt.y} h${7*scale} M${pt.x+5*scale},${pt.y} h${7*scale} M${pt.x},${pt.y-12*scale} v${7*scale} M${pt.x},${pt.y+5*scale} v${7*scale}`,stroke:st.hit?'#3fe0a5':'#ff8a3d','stroke-width':2*scale});
+  revealTargets(); st.step='dx'; view.classList.remove('locate'); draw();
+ });
+ const panel=h('div',{class:'card'});
+ function stepHead(n,t,active){ return h('div',{class:'step'+(active?'':' dim')},h('span',{class:'n'},n),t); }
+ function draw(){
+  panel.replaceChildren(
+   h('div',{class:'row'},h('span',{class:'tag'},M.short+' '+String(id).padStart(2,'0')),h('span',{class:'spacer'}),h('span',{class:'muted small'},it.region)),
+   h('div',{class:'feedback',style:'margin:12px 0 16px'},h('strong',null,'Clinical note: '),it.note));
+  panel.append(stepHead(1,'Locate the abnormality',st.step==='locate'));
+  if(st.step==='locate'){
+   panel.append(h('p',{class:'muted small'},'Click on the radiograph where you see the key finding. Use brightness, contrast and invert to help.'),
+    h('button',{class:'btn ghost sm',type:'button',onclick:()=>{st.hit=false;revealTargets();st.step='dx';view.classList.remove('locate');draw();}},'I can\'t find it — show me'));
+  } else panel.append(h('div',{class:'alert '+(st.hit?'good':'warn')},st.hit?'Well spotted — your mark is on the finding (green dashed circle).':'Not on target. The finding is inside the green dashed circle.'));
+  panel.append(h('div',{style:'height:8px'}),stepHead(2,'Interpret the finding',st.step!=='locate'));
+  if(st.step==='locate') return;
+  const fb=h('div');
+  panel.append(h('h3',null,it.q),...st.order.map(oi=>h('button',{class:'opt'+(st.dx!=null&&oi===it.a?' correct':'')+(st.dx===oi&&oi!==it.a?' wrong':''),type:'button',disabled:st.dx!=null?true:null,onclick:()=>{
+   if(st.dx!=null) return; st.dx=oi; st.step='done'; const ok=oi===it.a, secs=(Date.now()-st.start)/1000;
+   record(sess,modKey,id,(st.hit?1:0)+(ok?1:0),2,secs,{loc:st.hit?1:0,dx:ok?1:0}); draw();
+  }},it.o[oi])),fb);
+  if(st.dx!=null){
+   const ok=st.dx===it.a, sc=(st.hit?1:0)+(ok?1:0), nx=M.items.find(x=>x.id===id+1);
+   fb.append(h('div',{class:'feedback'},h('strong',null,(ok?'Correct. ':'Not quite. ')+'Answer: '+it.title+'. '),it.e),
+    h('h3',{style:'margin-top:14px'},'Key radiographic features'),h('ul',{class:'keys'},it.k.map(k=>h('li',null,k))),
+    h('div',{class:'row',style:'margin-top:16px'},h('span',{class:'tag '+(sc===2?'done':sc===1?'part':'bad')},`Score ${sc}/2`),h('span',{class:'spacer'}),
+     h('button',{class:'btn ghost',type:'button',onclick:()=>render()},'Retry'),nx?h('a',{class:'btn',href:`#/${M.route}/${nx.id}`},'Next →'):h('a',{class:'btn',href:'#/'+M.route},'All images')));
+  }
+ }
+ draw();
+ return h('div',null,h('p',null,h('a',{href:'#/'+M.route},'← All '+M.label.toLowerCase())),
+  h('div',{class:'split',style:modKey==='pano'?'grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)':null},h('div',null,view),panel));
+}
+
+/* ---------- my progress ---------- */
+function viewProgress(sess){
+ const S=summary(sess.id);
+ const kp=h('div',{class:'kpis'},
+  kpi(S.at.length,'Attempts'), kpi(S.at.length?pct(S.avg)+'%':'—','Average score'),
+  kpi(Object.values(S.mods).reduce((s,m)=>s+m.done,0)+'/30','Items completed'), kpi(fmtSecs(S.at.reduce((s,a)=>s+a.t,0)),'Time on task'));
+ const tables=Object.values(MODS).map(M=>h('div',{class:'card'},h('h2',null,M.label),h('div',{class:'tablewrap'},h('table',{class:'tbl'},
+  h('thead',null,h('tr',null,h('th',null,'#'),h('th',null,'Item'),h('th',null,'Attempts'),h('th',null,'Best'),h('th',null,'Last'),h('th',null,''))),
+  h('tbody',null,M.items.map(it=>{const r=S.by[M.key][it.id];
+   return h('tr',null,h('td',null,it.id),h('td',null,(M.key==='case'||r)?it.title:it.region),h('td',{class:'n'},r?r.n:0),h('td',{class:'n'},r?pct(r.best)+'%':'—'),h('td',{class:'n'},r?pct(r.last)+'%':'—'),
+    h('td',null,h('a',{href:M.key==='case'?`#/case/${it.id}`:`#/${M.route}/${it.id}`},r?(r.best<1?'Revisit':'Review'):'Start')));}))))));
+ return h('div',{class:'stack'},pageHead('Progress','My progress','Your scores across all three modules.'),kp,tables);
+}
+function kpi(v,l){ return h('div',{class:'card kpi'},h('div',{class:'v'},v),h('div',{class:'l'},l)); }
+
+/* ================================================================
+   VIEWS — ADMIN
+   ================================================================ */
+function viewAdmin(tab,sess){
+ const tabs=[['overview','Overview'],['students','Students'],['content','Item analysis'],['activity','Sign-in log'],['security','Security']];
+ const nav=h('nav',{class:'tabs'},tabs.map(([k,t])=>h('a',{href:'#/admin/'+k,class:tab===k?'on':null},t)));
+ const body={overview:adminOverview,students:adminStudents,content:adminContent,activity:adminActivity,security:adminSecurity}[tab](sess);
+ return h('div',null,pageHead('Administrator','Learning statistics','All student activity recorded in this browser\'s app data.',
+  h('div',{class:'row'},h('button',{class:'btn ghost',type:'button',onclick:exportCSV},'Export CSV'))),nav,body);
+}
+function adminOverview(){
+ const ids=students(), at=DB.attempts.filter(a=>getUser(a.u)), week=Date.now()-7*864e5;
+ const active=new Set(at.filter(a=>a.ts>week).map(a=>a.u)).size;
+ const mean=at.length?at.reduce((s,a)=>s+a.s/a.x,0)/at.length:0;
+ const modRows=Object.values(MODS).map(M=>{const a=at.filter(x=>x.m===M.key); const m=a.length?a.reduce((s,x)=>s+x.s/x.x,0)/a.length:0;
+  return h('div',{class:'barrow'},h('span',null,M.label,h('span',{class:'muted small'},` · ${a.length} attempts`)),bar(m*100),h('strong',{class:'n'},a.length?pct(m)+'%':'—'));});
+ const days=[]; for(let i=13;i>=0;i--){ const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-i); const s=d.getTime(), e=s+864e5; days.push({d,n:at.filter(a=>a.ts>=s&&a.ts<e).length}); }
+ const mx=Math.max(1,...days.map(d=>d.n));
+ const chart=h('div',{class:'days'},days.map(d=>h('div',{title:`${d.n} attempts`},h('small',null,d.n||''),h('i',{style:`height:${d.n/mx*80}%`}),h('small',null,d.d.getDate()))));
+ const cohorts={}; for(const id of ids){ const c=DB.users[id].cohort||'—'; cohorts[c]=(cohorts[c]||0)+1; }
+ const imgAt=at.filter(a=>a.m!=='case'), loc=imgAt.length?imgAt.reduce((s,a)=>s+(a.loc||0),0)/imgAt.length:0, dx=imgAt.length?imgAt.reduce((s,a)=>s+(a.dx||0),0)/imgAt.length:0;
+ return h('div',{class:'stack'},
+  h('div',{class:'kpis'},kpi(ids.length,'Registered students'),kpi(active,'Active last 7 days'),kpi(at.length,'Total attempts'),kpi(at.length?pct(mean)+'%':'—','Mean score')),
+  ids.length?null:h('div',{class:'alert warn'},'No students yet. Students register from the sign-in page. For a quick look at the dashboard, use “Add demo data” on the Students tab.'),
+  h('div',{class:'grid wide'},
+   h('div',{class:'card'},h('h2',null,'Performance by module'),modRows),
+   h('div',{class:'card'},h('h2',null,'Attempts, last 14 days'),chart)),
+  h('div',{class:'grid wide'},
+   h('div',{class:'card'},h('h2',null,'Radiograph skills'),h('p',{class:'muted small'},'Locating the finding vs. naming it correctly, across IOPA and panoramic items.'),
+    h('div',{class:'barrow'},h('span',null,'Located correctly'),bar(loc*100),h('strong',null,imgAt.length?pct(loc)+'%':'—')),
+    h('div',{class:'barrow'},h('span',null,'Interpreted correctly'),bar(dx*100),h('strong',null,imgAt.length?pct(dx)+'%':'—'))),
+   h('div',{class:'card'},h('h2',null,'Students by year'),Object.keys(cohorts).length?Object.entries(cohorts).map(([c,n])=>h('div',{class:'barrow'},h('span',null,c),bar(n/ids.length*100),h('strong',null,n))):h('p',{class:'muted'},'—'))));
+}
+let selStudent=null;
+function adminStudents(sess){
+ const ids=students().sort((a,b)=>(DB.users[b].lastLogin||0)-(DB.users[a].lastLogin||0));
+ const detail=h('div');
+ const showDetail=id=>{ selStudent=id; const S=summary(id), u=getUser(id); if(!u){detail.replaceChildren();return;}
+  detail.replaceChildren(h('div',{class:'card'},h('div',{class:'row'},h('h2',{style:'margin:0'},u.name),h('span',{class:'muted'},'@'+id+' · '+(u.cohort||'')),h('span',{class:'spacer'}),h('button',{class:'btn ghost sm',type:'button',onclick:()=>{selStudent=null;detail.replaceChildren();tbl.querySelectorAll('tr').forEach(r=>r.classList.remove('sel'));}},'Close')),
+   h('div',{class:'kpis',style:'margin-top:14px'},kpi(S.at.length,'Attempts'),kpi(S.at.length?pct(S.avg)+'%':'—','Average'),kpi(fmtSecs(S.at.reduce((s,a)=>s+a.t,0)),'Time on task'),kpi(fmtDT(S.last),'Last activity')),
+   S.at.length?h('div',{class:'tablewrap'},attemptTable(S.at.slice().reverse(),false)):h('p',{class:'muted'},'No attempts yet.')));
+  tbl.querySelectorAll('tr[data-id]').forEach(r=>r.classList.toggle('sel',r.dataset.id===id));
+ };
+ const tbl=h('table',{class:'tbl'},h('thead',null,h('tr',null,['Student','Year','Joined','Last sign-in','Attempts','Avg','Cases','IOPA','Pano','Status',''].map(t=>h('th',null,t)))),
+  h('tbody',null,ids.map(id=>{const u=DB.users[id], S=summary(id), locked=u.lockUntil>Date.now();
+   return h('tr',{'data-id':id},h('td',null,h('strong',null,u.name),h('div',{class:'muted small'},'@'+id+(u.demo?' · demo':''))),h('td',null,u.cohort||'—'),h('td',null,fmtDate(u.created)),h('td',null,fmtDT(u.lastLogin)),
+    h('td',{class:'n'},S.at.length),h('td',{class:'n'},S.at.length?pct(S.avg)+'%':'—'),h('td',{class:'n'},S.mods.case.done+'/10'),h('td',{class:'n'},S.mods.radio.done+'/10'),h('td',{class:'n'},S.mods.pano.done+'/10'),
+    h('td',null,locked?h('span',{class:'tag bad'},'Locked'):h('span',{class:'tag done'},'Active')),
+    h('td',null,h('div',{class:'row',style:'flex-wrap:nowrap'},h('button',{class:'btn ghost sm',type:'button',onclick:()=>showDetail(id)},'View'),
+     locked?h('button',{class:'btn ghost sm',type:'button',onclick:()=>{u.lockUntil=0;u.failed=0;saveDB();toast('Account unlocked.','good');render();}},'Unlock'):null,
+     h('button',{class:'btn ghost sm',type:'button',onclick:()=>{ if(!confirm(`Delete ${u.name} (@${id}) and all their learning records? This cannot be undone.`)) return; delete DB.users[id]; DB.attempts=DB.attempts.filter(a=>a.u!==id); saveDB(); toast('Student deleted.'); render(); }},'Delete'))));})));
+ const hasDemo=ids.some(id=>DB.users[id].demo);
+ const out=h('div',{class:'stack'},
+  h('div',{class:'card'},h('div',{class:'row',style:'margin-bottom:10px'},h('h2',{style:'margin:0'},`Students (${ids.length})`),h('span',{class:'spacer'}),
+    h('button',{class:'btn ghost sm',type:'button',onclick:addDemo},'Add demo data'),hasDemo?h('button',{class:'btn ghost sm',type:'button',onclick:clearDemo},'Remove demo data'):null),
+   ids.length?h('div',{class:'tablewrap'},tbl):h('div',{class:'empty'},'No students have registered yet.')),detail);
+ if(selStudent&&getUser(selStudent)) setTimeout(()=>showDetail(selStudent),0);
+ return out;
+}
+function adminContent(){
+ const at=DB.attempts.filter(a=>getUser(a.u));
+ return h('div',{class:'stack'},h('p',{class:'muted'},'Sorted hardest first, so you can see which topics need more teaching.'),Object.values(MODS).map(M=>{
+  const rows=M.items.map(it=>{const a=at.filter(x=>x.m===M.key&&x.i===it.id); const m=a.length?a.reduce((s,x)=>s+x.s/x.x,0)/a.length:null;
+   return {it,n:a.length,m,loc:a.length?a.reduce((s,x)=>s+(x.loc||0),0)/a.length:null,dx:a.length?a.reduce((s,x)=>s+(x.dx||0),0)/a.length:null,t:a.length?a.reduce((s,x)=>s+x.t,0)/a.length:null,u:new Set(a.map(x=>x.u)).size};})
+   .sort((a,b)=>(a.m==null?2:a.m)-(b.m==null?2:b.m));
+  const img=M.key!=='case';
+  return h('div',{class:'card'},h('h2',null,M.label),h('div',{class:'tablewrap'},h('table',{class:'tbl'},
+   h('thead',null,h('tr',null,h('th',null,'#'),h('th',null,'Item'),h('th',null,'Students'),h('th',null,'Attempts'),h('th',null,'Mean score'),img?h('th',null,'Located'):null,img?h('th',null,'Interpreted'):null,h('th',null,'Avg time'))),
+   h('tbody',null,rows.map(r=>h('tr',null,h('td',null,r.it.id),h('td',null,r.it.title),h('td',{class:'n'},r.u),h('td',{class:'n'},r.n),
+    h('td',{style:'min-width:150px'},r.m==null?h('span',{class:'muted'},'—'):h('div',{class:'row',style:'flex-wrap:nowrap'},h('div',{style:'flex:1'},bar(r.m*100)),h('strong',null,pct(r.m)+'%'))),
+    img?h('td',{class:'n'},r.loc==null?'—':pct(r.loc)+'%'):null,img?h('td',{class:'n'},r.dx==null?'—':pct(r.dx)+'%'):null,h('td',{class:'n'},r.t==null?'—':fmtSecs(r.t))))))));
+ }));
+}
+function adminActivity(){
+ const list=DB.logins.slice(-60).reverse();
+ const fails=DB.logins.filter(l=>!l.ok&&l.ts>Date.now()-864e5).length;
+ return h('div',{class:'stack'},h('div',{class:'kpis'},kpi(DB.logins.filter(l=>l.ok).length,'Successful sign-ins'),kpi(fails,'Failed sign-ins (24 h)'),kpi(Object.values(DB.users).filter(u=>u.lockUntil>Date.now()).length,'Locked accounts')),
+  h('div',{class:'card'},h('h2',null,'Recent sign-in attempts'),list.length?h('div',{class:'tablewrap'},h('table',{class:'tbl'},h('thead',null,h('tr',null,h('th',null,'When'),h('th',null,'Username'),h('th',null,'Result'),h('th',null,'Detail'))),
+   h('tbody',null,list.map(l=>h('tr',null,h('td',null,fmtDT(l.ts)),h('td',null,l.u),h('td',null,h('span',{class:'tag '+(l.ok?'done':'bad')},l.ok?'Success':'Failed')),h('td',{class:'muted'},l.r)))))):h('p',{class:'muted'},'No sign-in attempts recorded.')));
+}
+function adminSecurity(){
+ const admin=getUser(DEFAULT_ADMIN.u), users=Object.values(DB.users);
+ const cspMeta=document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+ const checks=[
+  ['Default admin password changed',admin&&!admin.mustChange,'The built-in admin account must change its default password on first sign-in.'],
+  ['Passwords stored as salted hashes',users.every(u=>(u.hash==='!'||(u.salt&&u.hash))&&!('password' in u)),`PBKDF2-SHA-256, ${ITER.toLocaleString()} iterations, unique 16-byte salt per user. Plain-text passwords are never stored.`],
+  ['Web Crypto available',!!(window.crypto&&crypto.subtle),'Hashing and random tokens use the browser\'s secure cryptography API.'],
+  ['Content Security Policy active',!!cspMeta,'Blocks external scripts, network requests, frames and form posts.'],
+  ['Brute-force protection',true,`Accounts lock for ${LOCK_MS/60000} minutes after ${LOCK_AFTER} failed attempts. Errors do not reveal whether a username exists.`],
+  ['Session timeout',true,`Sessions end after ${IDLE_MS/60000} minutes of inactivity or when the browser tab closes; one active session per account.`],
+  ['Role-based access',true,'Admin pages are checked on every navigation; sign-up can only create student accounts.'],
+  ['Output encoding',true,'All user-entered text is rendered as text, never as HTML, to prevent script injection (XSS).'],
+  ['Input validation',true,'Names, usernames and passwords are checked against strict patterns; a honeypot field deters bots.'],
+  ['CSV export hardened',true,'Cells starting with = + - @ are neutralised to prevent spreadsheet formula injection.']];
+ const lim=['All data lives in this browser\'s local storage. Each computer/browser has its own separate set of users and statistics. For a class, the app needs a shared server database.',
+  'A determined user with browser developer tools can read or alter local storage. Client-side checks are a safeguard, not a substitute for server-side authentication.',
+  'Serve the file over HTTPS when hosting it, and add HTTP security headers (HSTS, frame-ancestors) at the web server.'];
+ return h('div',{class:'grid wide'},
+  h('div',{class:'card'},h('h2',null,'Security self-check'),h('ul',{class:'sec-list'},checks.map(([t,ok,d])=>h('li',null,h('span',{class:'ic '+(ok?'ok':'bad')},ok?'✓':'!'),h('div',null,h('strong',null,t),h('div',{class:'muted small'},d)))))),
+  h('div',{class:'card'},h('h2',null,'Prototype limitations'),h('ul',{class:'sec-list'},lim.map(t=>h('li',null,h('span',{class:'ic warn'},'i'),h('div',{class:'small'},t)))),
+   h('h3',{style:'margin-top:18px'},'Reset app data'),h('p',{class:'muted small'},'Removes all students, attempts and logs from this browser and recreates the default admin.'),
+   h('button',{class:'btn danger sm',type:'button',onclick:async()=>{ if(!confirm('Erase ALL users, statistics and logs in this browser? This cannot be undone.')) return; LS.removeItem(KEY); SS.removeItem(SKEY); loadDB(); await ensureAdmin(); flash={kind:'good',msg:'All data erased. Sign in with the default admin credentials.'}; go('#/login'); }},'Erase all data')));
+}
+function csvCell(v){ let s=String(v==null?'':v); if(/^[=+\-@\t\r]/.test(s)) s="'"+s; return '"'+s.replace(/"/g,'""')+'"'; }
+function exportCSV(){
+ const rows=[['username','name','year','module','item','item_title','score','max','percent','seconds','located','interpreted','timestamp']];
+ for(const a of DB.attempts){ const u=getUser(a.u); if(!u) continue; const M=MODS[a.m]; const it=M&&M.items.find(x=>x.id===a.i);
+  rows.push([a.u,u.name,u.cohort||'',M?M.label:a.m,a.i,it?it.title:'',a.s,a.x,pct(a.s/a.x),a.t,a.loc==null?'':a.loc,a.dx==null?'':a.dx,new Date(a.ts).toISOString()]); }
+ const blob=new Blob(['﻿'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n')],{type:'text/csv'});
+ const url=URL.createObjectURL(blob), a=h('a',{href:url,download:'drts-dental-stats-'+new Date().toISOString().slice(0,10)+'.csv'});
+ document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),2000);
+ toast(`Exported ${rows.length-1} attempts.`,'good');
+}
+function addDemo(){
+ const names=['Aarav Menon','Diya Raghavan','Kavin Kumar','Meera Iyer','Nikhil Rao','Priya Subramanian','Rahul Varma','Sneha Pillai'];
+ const diff={case:[.85,.7,.75,.5,.8,.8,.85,.75,.7,.6],radio:[.75,.7,.45,.6,.8,.65,.5,.6,.7,.55],pano:[.8,.6,.65,.7,.5,.45,.4,.65,.55,.5]};
+ const r=()=>{const u=new Uint32Array(1);crypto.getRandomValues(u);return u[0]/4294967296;};
+ names.forEach((n,k)=>{ const id='demo_'+n.split(' ')[0].toLowerCase(); if(getUser(id)) return;
+  const skill=.75+r()*.45, created=Date.now()-(14+Math.floor(r()*10))*864e5;
+  DB.users[id]={name:n,role:'student',cohort:COHORTS[k%5],salt:'',hash:'!',created,failed:0,lockUntil:0,lastLogin:Date.now()-Math.floor(r()*6*864e5),demo:true};
+  const count=6+Math.floor(r()*20);
+  for(let j=0;j<count;j++){ const m=['case','radio','pano'][Math.floor(r()*3)], i=1+Math.floor(r()*10), p=Math.min(.98,diff[m][i-1]*skill), ts=Date.now()-Math.floor(r()*13*864e5)-Math.floor(r()*36e6);
+   if(m==='case'){ let s=0; for(let q=0;q<3;q++) if(r()<p) s++; DB.attempts.push({u:id,m,i,s,x:3,t:90+Math.floor(r()*300),ts}); }
+   else { const loc=r()<p+.05?1:0, dx=r()<p?1:0; DB.attempts.push({u:id,m,i,s:loc+dx,x:2,t:30+Math.floor(r()*150),ts,loc,dx}); }
+   DB.logins.push({u:id,ok:true,r:'success (demo)',ts}); }
+ });
+ DB.attempts.sort((a,b)=>a.ts-b.ts); DB.logins.sort((a,b)=>a.ts-b.ts);
+ saveDB(); toast('Demo students and activity added.','good'); render();
+}
+function clearDemo(){ const ids=Object.keys(DB.users).filter(k=>DB.users[k].demo); for(const id of ids) delete DB.users[id]; DB.attempts=DB.attempts.filter(a=>!ids.includes(a.u)); DB.logins=DB.logins.filter(l=>!ids.includes(l.u)); saveDB(); toast('Demo data removed.'); render(); }
+
+/* ================================================================
+   ROUTER
+   ================================================================ */
+function parseRoute(){ const m=(location.hash||'').match(/^#\/([a-z]{1,12})(?:\/([a-z0-9]{1,12}))?$/); return m?{p:m[1],a:m[2]||''}:{p:'',a:''}; }
+function validId(a,arr){ if(!/^\d{1,2}$/.test(a)) return null; const n=+a; return arr.some(x=>x.id===n)?n:null; }
+function render(){
+ const r=parseRoute(), s=getSession();
+ if(!s){ if(r.p==='signup') return show(viewSignup(),null,r.p); if(r.p!=='login'&&r.p!=='') { location.replace('#/login'); return; } return show(viewLogin(),null,'login'); }
+ if(s.u.mustChange&&r.p!=='account') return go('#/account');
+ switch(r.p){
+  case 'home': return show(viewHome(s),s,'home');
+  case 'cases': return show(viewList('case',s),s,'cases');
+  case 'case': { const id=validId(r.a,CASES); return id?show(viewCase(id,s),s,'cases'):go('#/cases'); }
+  case 'radio': case 'pano': {
+   if(!r.a) return show(viewList(r.p,s),s,r.p);
+   const id=validId(r.a,MODS[r.p].items); return id?show(viewImage(r.p,id,s),s,r.p):go('#/'+r.p); }
+  case 'progress': return show(viewProgress(s),s,'progress');
+  case 'account': return show(viewAccount(s),s,'account');
+  case 'admin': {
+   if(s.u.role!=='admin'){ toast('That page is for administrators only.','bad'); return go('#/home'); }
+   const tab=['overview','students','content','activity','security'].includes(r.a)?r.a:'overview';
+   return show(viewAdmin(tab,s),s,'admin'); }
+  default: return go(s.u.role==='admin'?'#/admin':'#/home');
+ }
+}
+
+/* ================================================================
+   BOOT
+   ================================================================ */
+async function boot(){
+ if(!(window.crypto&&crypto.subtle)){ $('#app').append(h('div',{class:'card alert bad'},'This browser does not provide secure cryptography (Web Crypto). Please open the app in a current version of Chrome, Edge, Firefox or Safari.')); return; }
+ loadDB(); await ensureAdmin();
+ if(!LS.persistent){ const w=h('div',{class:'alert warn',style:'max-width:1148px;margin:12px auto 0'},h('strong',null,'Preview mode: '),'this window blocks browser storage, so accounts and scores last only until you close or reload it. Download the file and open it directly in Chrome, Edge, Firefox or Safari to keep data.'); document.body.insertBefore(w,$('#app')); }
+ window.addEventListener('hashchange',render);
+ window.addEventListener('storage',e=>{ if(e.key===KEY) loadDB(); });
+ ['click','keydown','pointerdown','scroll'].forEach(ev=>window.addEventListener(ev,touch,{passive:true}));
+ setInterval(()=>{ const s=readSess(); if(s&&Date.now()>s.exp){ endSession('expired'); render(); } },15000);
+ render();
+}
+boot();
+})();
+</script>
+</body>
+</html>
