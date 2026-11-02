@@ -1,0 +1,7 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/dental-case-lab.html"
+  to = "/"
+  status = 301
